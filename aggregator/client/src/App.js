@@ -86,7 +86,6 @@ const App = () => {
 		<div className="home">
 			<div>{hasAccount ? <RegistrationForm /> : <LoginForm />}</div>
 			<form className="home__form" onSubmit={getRss}>
-				<h2>Website Aggregator</h2>
 				<Masonry columns={2} spacing={2}>
 					{heights.map((height, index) => (
 						<Paper key={index}>
