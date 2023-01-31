@@ -5,7 +5,7 @@ import Feed from "./Feed"
 import {
 	Masonry,
 	Paper,
-	StyledAccordion,
+	Accordion,
 	AccordionSummary,
 	AccordionDetails,
 	Typography,
@@ -24,7 +24,7 @@ const App = () => {
 				<Masonry columns={2} spacing={2}>
 					{heights.map((height, index) => (
 						<Paper key={index}>
-							<StyledAccordion sx={{ minHeight: height }}>
+							<Accordion sx={{ minHeight: height }}>
 								<AccordionSummary
 									expandIcon={<ExpandMoreIcon />}
 								>
@@ -37,7 +37,7 @@ const App = () => {
 										<Feed/>
 									</div>
 								</AccordionDetails>
-							</StyledAccordion>
+							</Accordion>
 						</Paper>
 					))}
 				</Masonry>
