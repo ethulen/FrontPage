@@ -10,14 +10,14 @@ import {
 import React, { useState } from "react";
 
 function Feed() {
-    let heights;
-    const [rssUrl, setRssUrl] = useState("");
+	let heights;
+	const [rssUrl, setRssUrl] = useState("");
 	const [items, setItems] = useState([]);
 
-    const getRss = async (e) => {
+	const getRss = async (e) => {
 		e.preventDefault();
 		const urlRegex =
-			/(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/;
+			/(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:/~+#-]*[\w@?^=%&amp;/~+#-])?/;
 		if (!urlRegex.test(rssUrl)) {
 			return;
 		}
@@ -55,10 +55,18 @@ function Feed() {
 										}
 										value={rssUrl}
 									/>
+									<input type="submit" />
 								</div>
-								<button onClick={handleSubmit}>
-									ADD WEBSITE
-								</button>
+
+								{items.map((item) => {
+									return (
+										<div>
+											<h1>{item.title}</h1>
+											<p>{item.author}</p>
+											<a href={item.link}>{item.link}</a>
+										</div>
+									);
+								})}
 							</AccordionDetails>
 						</StyledAccordion>
 					</Paper>
