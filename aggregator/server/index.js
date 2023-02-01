@@ -1,5 +1,4 @@
 //index.js
-import { ChatGPTAPIBrowser } from "chatgpt";
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 
@@ -13,10 +12,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
 
-//holds all the ChatGPT result
-const database = [];
-//generates a random string as ID
-const generateID = () => Math.random().toString(36).substring(2, 10);
 
 async function requestAPI(url) {
 	let result = await axios({
@@ -28,27 +23,6 @@ async function requestAPI(url) {
 	return result
 }
 
-async function chatgptFunction(content) {
-    // use puppeteer to bypass cloudflare (headful because of captchas)
-    const api = new ChatGPTAPIBrowser({
-        email: "<CHATGPT_EMAIL_ADDRESS>",
-        password: "<CHATGPT_PASSWORD>",
-    });
-    await api.initSession();
-    //Extracts the brand name from the website content
-    const getBrandName = await api.sendMessage(
-        `I have a raw text of a website, what is the brand name in a single word? ${content}`
-    );
-    //Extracts the brand description from the website content
-    const getBrandDescription = await api.sendMessage(
-        `I have a raw text of a website, can you extract the description of the website from the raw text. I need only the description and nothing else. ${content}`
-    );
-    //Returns the response from ChatGPT
-    return {
-        brandName: getBrandName.response,
-        brandDescription: getBrandDescription.response,
-    };
-}
 
 app.post("/api/url", (req, res) => {
     const { url } = req.body;

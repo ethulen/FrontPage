@@ -3,14 +3,14 @@ import RegistrationForm from "./RegistrationForm";
 import LoginForm from "./LoginForm";
 import Feed from "./Feed"
 import {
-	Masonry,
 	Paper,
 	Accordion,
 	AccordionSummary,
 	AccordionDetails,
 	Typography,
-	ExpandMoreIcon,
-} from "@mui-material";
+} from "@mui/material";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { Masonry } from '@mui/lab';
 
 const App = () => {
 
