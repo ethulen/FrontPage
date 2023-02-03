@@ -14,7 +14,7 @@ import { Masonry } from '@mui/lab';
 
 const App = () => {
 
-	let heights;
+	let heights = [32, 45];
 	let hasAccount;
 
 	return (

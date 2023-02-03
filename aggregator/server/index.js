@@ -17,7 +17,7 @@ async function requestAPI(url) {
 	let result = await axios({
 		url:
 			"https://api.zenrows.com/v1/?apikey=f53912d65154c6a743ec78009cb38332a05d6744&url=" +
-			encodeURIComponent(url),
+			encodeURLComponent(url),
 		method: "GET",
 	})
 	return result

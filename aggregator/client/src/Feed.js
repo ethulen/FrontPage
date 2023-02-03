@@ -1,12 +1,12 @@
 import {
-	Masonry,
 	Paper,
-	StyledAccordion,
+	Accordion,
 	AccordionSummary,
 	AccordionDetails,
 	Typography,
-	ExpandMoreIcon,
-} from "@mui-material";
+} from "@mui/material";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { Masonry } from '@mui/lab';
 import React, { useState } from "react";
 
 function Feed() {
@@ -41,7 +41,7 @@ function Feed() {
 			<Masonry columns={2} spacing={2}>
 				{heights.map((height, index) => (
 					<Paper key={index}>
-						<StyledAccordion sx={{ minHeight: height }}>
+						<Accordion sx={{ minHeight: height }}>
 							<AccordionSummary expandIcon={<ExpandMoreIcon />}>
 								<Typography>Accordion {index + 1}</Typography>
 							</AccordionSummary>
@@ -68,7 +68,7 @@ function Feed() {
 									);
 								})}
 							</AccordionDetails>
-						</StyledAccordion>
+						</Accordion>
 					</Paper>
 				))}
 			</Masonry>
