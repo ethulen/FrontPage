@@ -1,79 +1,87 @@
-import {
-	Paper,
-	Accordion,
-	AccordionSummary,
-	AccordionDetails,
-	Typography,
-} from "@mui/material";
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Masonry } from '@mui/lab';
-import React, { useState } from "react";
+import React from "react";
+import axios from 'axios';
 
-function Feed() {
-	let heights;
-	const [rssUrl, setRssUrl] = useState("");
-	const [items, setItems] = useState([]);
+class Feed extends React.Component{
+	constructor(props){
+        super(props)
+        this.state = {
+            headlinesNews: [],
+            isLoading: true,
+            errors: null
+        };
+    }
 
-	const getRss = async (e) => {
-		e.preventDefault();
-		const urlRegex =
-			/(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:/~+#-]*[\w@?^=%&amp;/~+#-])?/;
-		if (!urlRegex.test(rssUrl)) {
-			return;
-		}
-		const res = await fetch(`https://api.allorigins.win/get?url=${rssUrl}`);
-		const { contents } = await res.json();
-		const feed = new window.DOMParser().parseFromString(
-			contents,
-			"text/xml"
-		);
-		const items = feed.querySelectorAll("item");
-		const feedItems = [...items].map((el) => ({
-			link: el.querySelector("link").innerHTML,
-			title: el.querySelector("title").innerHTML,
-			author: el.querySelector("author").innerHTML,
-		}));
-		setItems(feedItems);
-	};
 
-	return (
-		<form className="home__form" onSubmit={getRss}>
-			<Masonry columns={2} spacing={2}>
-				{heights.map((height, index) => (
-					<Paper key={index}>
-						<Accordion sx={{ minHeight: height }}>
-							<AccordionSummary expandIcon={<ExpandMoreIcon />}>
-								<Typography>Accordion {index + 1}</Typography>
-							</AccordionSummary>
-							<AccordionDetails>
-								<div>
-									<label> rss url</label>
-									<br />
-									<input
-										onChange={(e) =>
-											setRssUrl(e.target.value)
-										}
-										value={rssUrl}
-									/>
-									<input type="submit" />
-								</div>
+	getHeadlines(catagories) {
+        // Axios fetches headlines
+        axios.get('https://newsapi.org/v2/top-headlines/sources',{
+            params: {country: catagories, apiKey: 'e188a3e6d6c64590be570b46271bd205'}
+        })
+          // Once a response is obtained, map the API endpoints to props
+          .then(response =>
+            response.data.articles.map(news => ({
+              title: `${news.title}`,
+              description: `${news.description}`,
+              author: `${news.author}`,
+              newsurl: `${news.url}`,
+              url: `${news.urlToImage}`,
+              content: `${news.content}`
+            }))
+          )
+          // Change the loading state to display the data
+          .then(headlinesNews => {
+            this.setState({
+              headlinesNews,
+              isLoading: false
+            });
+          })
+          // We can still use the `.catch()` method since axios is promise-based
+          .catch(error => this.setState({ error, isLoading: false }));
+    }
 
-								{items.map((item) => {
-									return (
-										<div>
-											<h1>{item.title}</h1>
-											<p>{item.author}</p>
-											<a href={item.link}>{item.link}</a>
-										</div>
-									);
-								})}
-							</AccordionDetails>
-						</Accordion>
-					</Paper>
-				))}
-			</Masonry>
-		</form>
-	);
+    componentDidMount() {
+        this.getHeadlines('us')
+    }
+
+    render(){
+        const { isLoading, headlinesNews } = this.state;
+        return (
+            <React.Fragment>
+            <div className="subhead"><h2>Headlines</h2></div>
+            <div>
+                {!isLoading ? (
+                headlinesNews.map(news => {
+                    const { title, description, author, newsurl, url, content } = news;
+                    return (
+                    <div className="collumn" key={title}>
+                        <div className="head">
+                            <span className="headline hl3">
+                                {title}
+                            </span>
+                            <p>
+                                <span className="headline hl4">
+                                    {author}
+                                </span>
+                            </p>
+                            <figure className="figure">
+								<img className="media" src={url} alt="" />
+						    </figure>
+                            <p>
+                                {description}<br />
+                                {content}
+                            </p>
+                            <a href={newsurl} target="_blank" rel="noopener noreferrer">Read full news</a>
+                        </div>
+                    </div>
+                    );
+                })
+                ) : (
+                <p>Loading...</p>
+                )}
+            </div>
+            </React.Fragment>
+        );
+    }
 }
 
 export default Feed;

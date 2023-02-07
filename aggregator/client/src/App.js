@@ -2,6 +2,7 @@ import React from "react";
 import RegistrationForm from "./RegistrationForm";
 import LoginForm from "./LoginForm";
 import Feed from "./Feed"
+import Header from "./Header"
 import {
 	Paper,
 	Accordion,
@@ -19,7 +20,8 @@ const App = () => {
 
 	return (
 		<div className="home">
-			<div>{hasAccount ? <RegistrationForm /> : <LoginForm />}</div>
+			<Header/>
+			{/* <div>{hasAccount ? <RegistrationForm /> : <LoginForm />}</div> */}
 			<form className="home__form">
 				<Masonry columns={2} spacing={2}>
 					{heights.map((height, index) => (
@@ -39,6 +41,7 @@ const App = () => {
 								</AccordionDetails>
 							</Accordion>
 						</Paper>
+						
 					))}
 				</Masonry>
 			</form>
