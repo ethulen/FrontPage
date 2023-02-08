@@ -8,7 +8,6 @@ import {
 	Accordion,
 	AccordionSummary,
 	AccordionDetails,
-	Typography,
 } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Masonry } from '@mui/lab';
@@ -30,9 +29,6 @@ const App = () => {
 								<AccordionSummary
 									expandIcon={<ExpandMoreIcon />}
 								>
-									<Typography>
-										Accordion {index + 1}
-									</Typography>
 								</AccordionSummary>
 								<AccordionDetails>
 									<div>

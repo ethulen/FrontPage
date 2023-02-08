@@ -10,12 +10,10 @@ class Feed extends React.Component{
             errors: null
         };
     }
-
-
-	getHeadlines(catagories) {
+	getHeadlines(sources) {
         // Axios fetches headlines
-        axios.get('https://newsapi.org/v2/top-headlines/sources',{
-            params: {country: catagories, apiKey: 'e188a3e6d6c64590be570b46271bd205'}
+        axios.get('https://newsapi.org/v2/everything',{
+            params: {domains: sources, apiKey: 'e188a3e6d6c64590be570b46271bd205'}
         })
           // Once a response is obtained, map the API endpoints to props
           .then(response =>
@@ -24,8 +22,7 @@ class Feed extends React.Component{
               description: `${news.description}`,
               author: `${news.author}`,
               newsurl: `${news.url}`,
-              url: `${news.urlToImage}`,
-              content: `${news.content}`
+              url: `${news.urlToImage}`
             }))
           )
           // Change the loading state to display the data
@@ -35,23 +32,22 @@ class Feed extends React.Component{
               isLoading: false
             });
           })
-          // We can still use the `.catch()` method since axios is promise-based
+          // Use the `.catch()` method since axios is promise-based
           .catch(error => this.setState({ error, isLoading: false }));
     }
 
     componentDidMount() {
-        this.getHeadlines('us')
+        this.getHeadlines('reuters.com')
     }
 
     render(){
         const { isLoading, headlinesNews } = this.state;
         return (
             <React.Fragment>
-            <div className="subhead"><h2>Headlines</h2></div>
             <div>
                 {!isLoading ? (
                 headlinesNews.map(news => {
-                    const { title, description, author, newsurl, url, content } = news;
+                    const { title, description, author, newsurl, url } = news;
                     return (
                     <div className="collumn" key={title}>
                         <div className="head">
@@ -68,7 +64,6 @@ class Feed extends React.Component{
 						    </figure>
                             <p>
                                 {description}<br />
-                                {content}
                             </p>
                             <a href={newsurl} target="_blank" rel="noopener noreferrer">Read full news</a>
                         </div>
