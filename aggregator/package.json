@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "massive": "^6.11.2",
     "newsapi": "^2.4.1"
   }
 }
