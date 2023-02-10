@@ -11,6 +11,9 @@ input {
     margin: 10px 0;
     outline: none;
 }
+img{
+    width:100%
+}
 button {
     width: 200px;
     cursor: pointer;
