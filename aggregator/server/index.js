@@ -1,8 +1,4 @@
 //index.js
-import { createRequire } from "module";
-const require = createRequire(import.meta.url);
-
-const axios = require("axios");
 const express = require("express");
 const cors = require("cors");
 const app = express();
