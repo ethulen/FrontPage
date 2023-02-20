@@ -1,6 +1,7 @@
 import React from "react";
 import Feed from "./Feed"
 import Header from "./Header"
+import MenuBar from "./MenuBar"
 import { Masonry } from '@mui/lab';
 
 const App = () => {
@@ -12,6 +13,7 @@ const App = () => {
 		<div className="home">
 			<Header />
 			<form className="home__form">
+				<MenuBar/>
 				<Masonry columns={2} spacing={2}>
 					{heights.map((height, index) => (
 						<Feed />
