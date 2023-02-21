@@ -26,11 +26,11 @@ const App = () => {
 				<Router history={customHistory}>
 					<nav>
 						<ul>
-							<>
+							<React.Fragment style="display: flex; justify-content: flex-end">
 								<span><li><Link to={"/"}>Home</Link></li></span>							
 								<span><li><Link to={"/login"}>Login</Link></li></span>
 								<span><li><Link to={"/register"}>Register</Link></li></span>
-							</>
+							</React.Fragment>
 						</ul>
 					</nav>
 					<Switch>
