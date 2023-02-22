@@ -1,7 +1,4 @@
 import React, { useState } from 'react';
-import {
-	Link
-} from "react-router-dom";
 import axios from 'axios';
 
 const RegistrationForm = () => {
@@ -75,7 +72,6 @@ const RegistrationForm = () => {
 
 	return (
 		<div className="form">
-			<Link to="/register">Register</Link>
 			<div>
 				<h1>User Registration</h1>
 			</div>
