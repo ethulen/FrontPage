@@ -1,25 +1,46 @@
 import React from "react";
 import Feed from "./Feed"
 import Header from "./Header"
-import MenuBar from "./MenuBar"
+import { Link, Switch, Route, Router } from 'react-router-dom'
+import LoginForm from './LoginForm';
+import RegistrationForm from './RegistrationForm';
 import { Masonry } from '@mui/lab';
+import { createBrowserHistory } from "history";
+
+const customHistory = createBrowserHistory();
+
+const Home = () => {
+	return (
+		<form className="home__form">
+			<Masonry columns={2} spacing={2}>
+				<Feed />
+			</Masonry>
+		</form>)
+}
 
 const App = () => {
-
-	const heights = [150, 30, 90, 70, 110, 150, 130, 80, 50, 90, 100, 150, 30, 50, 80];
-
-
 	return (
 		<div className="home">
 			<Header />
-			<form className="home__form">
-				<MenuBar/>
-				<Masonry columns={2} spacing={2}>
-					{heights.map((height, index) => (
-						<Feed />
-					))}
-				</Masonry>
-			</form>
+			<div>
+				<Router history={customHistory}>
+					<nav>
+						<ul>
+							<>
+								<span><li><Link to={"/"}>Home</Link></li></span>							
+								<span><li><Link to={"/login"}>Login</Link></li></span>
+								<span><li><Link to={"/register"}>Register</Link></li></span>
+							</>
+						</ul>
+					</nav>
+					<Switch>
+						<Route path="/login" component={LoginForm}></Route>
+						<Route path="/register" component={RegistrationForm}></Route>
+						<Route exact path="/" component={Home}></Route>
+					</Switch>
+				</Router>
+			</div>
+
 		</div>
 	);
 };
