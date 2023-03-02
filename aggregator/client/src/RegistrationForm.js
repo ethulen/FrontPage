@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import {
 	Link
 } from "react-router-dom";
+import axios from 'axios';
 
 const RegistrationForm = () => {
 
@@ -41,6 +42,9 @@ const RegistrationForm = () => {
 			setSubmitted(true);
 			setError(false);
 		}
+		axios.post("http://127.0.0.1:4000/register", {name, email, password}).then((response) => {
+			console.log(response);
+		  })
 	};
 
 	// Showing success message
