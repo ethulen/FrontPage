@@ -7,6 +7,7 @@ exports.up = function(knex) {
     .createTable('users', function (table) {
       table.increments('id')
       table.string('username', 20).unique().notNullable()
+      table.string('email', 40).unique().notNullable()
       table.string('password', 255).notNullable()
       table.text('preferences')
       table.timestamp('created_at').defaultTo(knex.fn.now())
