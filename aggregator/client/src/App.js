@@ -22,25 +22,26 @@ const App = () => {
 	return (
 		<div className="home">
 			<Header />
-			<div>
-				<Router history={customHistory}>
-					<nav>
-						<ul>
-							<React.Fragment style="display: flex; justify-content: flex-end">
-								<span><li><Link to={"/"}>Home</Link></li></span>							
-								<span><li><Link to={"/login"}>Login</Link></li></span>
-								<span><li><Link to={"/register"}>Register</Link></li></span>
-							</React.Fragment>
-						</ul>
-					</nav>
-					<Switch>
-						<Route path="/login" component={LoginForm}></Route>
-						<Route path="/register" component={RegistrationForm}></Route>
-						<Route exact path="/" component={Home}></Route>
-					</Switch>
-				</Router>
+			<div align="right">
+					<Router history={customHistory}>
+						<nav>
+							<ul>
+								<>
+									<span><Link to={"/"}>Home</Link></span>
+									<span>   	</span>
+									<span><Link to={"/login"}>Login</Link></span>
+									<span>   	</span>
+									<span><Link to={"/register"}>Register</Link></span>
+								</>
+							</ul>
+						</nav>
+						<Switch>
+							<Route path="/login" component={LoginForm}></Route>
+							<Route path="/register" component={RegistrationForm}></Route>
+							<Route exact path="/" component={Home}></Route>
+						</Switch>
+					</Router>
 			</div>
-
 		</div>
 	);
 };

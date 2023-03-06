@@ -24,6 +24,10 @@ h1 {
   color: white;
 }
 
+.span{
+  display: inline;
+}
+
 .App-link {
   color: #61dafb;
   

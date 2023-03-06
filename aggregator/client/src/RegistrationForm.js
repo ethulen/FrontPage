@@ -42,9 +42,9 @@ const RegistrationForm = () => {
 			setSubmitted(true);
 			setError(false);
 		}
-		axios.post("http://127.0.0.1:4000/register", {name, email, password}).then((response) => {
+		axios.post("http://127.0.0.1:4000/register", { name, email, password }).then((response) => {
 			console.log(response);
-		  })
+		})
 	};
 
 	// Showing success message
@@ -55,7 +55,7 @@ const RegistrationForm = () => {
 				style={{
 					display: submitted ? '' : 'none',
 				}}>
-				<h1>User {name} successfully registered!!</h1>
+				User {name} successfully registered!!
 			</div>
 		);
 	};
@@ -68,7 +68,7 @@ const RegistrationForm = () => {
 				style={{
 					display: error ? '' : 'none',
 				}}>
-				<h1>Please enter all the fields</h1>
+				Please enter all the fields
 			</div>
 		);
 	};
@@ -80,30 +80,29 @@ const RegistrationForm = () => {
 				<h1>User Registration</h1>
 			</div>
 
+			<form>
+				{/* Labels and inputs for form data */}
+				<label className="label">Name: </label>
+				<input onChange={handleName} className="input"
+					value={name} type="text" />
+				<p/>
+				<label className="label">Email: </label>
+				<input onChange={handleEmail} className="input"
+					value={email} type="email" />
+				<p/>
+				<label className="label">Password: </label>
+				<input onChange={handlePassword} className="input"
+					value={password} type="password" />
+				<p/>
+				<button onClick={handleSubmit} className="btn" type="submit">
+					Submit
+				</button>
+			</form>
 			{/* Calling to the methods */}
 			<div className="messages">
 				{errorMessage()}
 				{successMessage()}
 			</div>
-
-			<form>
-				{/* Labels and inputs for form data */}
-				<label className="label">Name</label>
-				<input onChange={handleName} className="input"
-					value={name} type="text" />
-
-				<label className="label">Email</label>
-				<input onChange={handleEmail} className="input"
-					value={email} type="email" />
-
-				<label className="label">Password</label>
-				<input onChange={handlePassword} className="input"
-					value={password} type="password" />
-
-				<button onClick={handleSubmit} className="btn" type="submit">
-					Submit
-				</button>
-			</form>
 		</div>
 	);
 }
