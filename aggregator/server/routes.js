@@ -7,9 +7,9 @@ const setUpRoutes = (app) => {
         res.send('POST request to the homepage')
     })
     // GET method route
-    // app.get('/login', (req, res) => {
-    //     knexDB.select('username').from('users')
-    //     knexDB.select('password').from('users')
+    // app.get('/login', async (req, res) => {
+    //     await knexDB.select('username').from('users')
+    //     await knexDB.select('password').from('users')
     //     res.send('GET request to the homepage')
     // })
 }
