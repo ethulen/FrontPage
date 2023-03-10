@@ -72,8 +72,9 @@ const RegistrationForm = () => {
 
 	return (
 		<div className="form">
-			<div>
-				<h1>User Registration</h1>
+			<div/>
+			<div style={{paddingTop: 18}}>
+				<h2>User Registration</h2>
 			</div>
 
 			<form>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import {useNavigate} from 'react-router-dom';
+import {Redirect} from 'react-router-dom';
 import axios from 'axios';
 
 const LoginForm = () => {
@@ -50,8 +50,8 @@ const LoginForm = () => {
 	return (
         <div className="app">
           <div className="login-form">
-            <div className="title">Sign In</div>
-            {isSubmitted ? <div>User is successfully logged in</div> : renderForm}
+            <div className="title" style={{paddingTop: 18}}><h2>Sign In</h2></div>
+            {isSubmitted ? <Redirect to='/'/>: renderForm}
           </div>
         </div>
       );
