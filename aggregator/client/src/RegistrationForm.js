@@ -38,6 +38,7 @@ const RegistrationForm = () => {
 		} else {
 			setSubmitted(true);
 			setError(false);
+			window.location.href = "http://localhost:3000/feedSelector"
 		}
 		axios.post("http://127.0.0.1:4000/register", { name, email, password }).then((response) => {
 			console.log(response);

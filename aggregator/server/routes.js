@@ -2,6 +2,7 @@ const knexDB = require("./knex");
 const bcrypt = require("bcrypt");
 const express = require('express')
 const cookieParser = require("cookie-parser");
+const bodyParser = require("body-parser");
 const sessions = require('express-session');
 const saltRounds = 10;
 const app = express();
@@ -34,6 +35,34 @@ const setUpRoutes = (app) => {
 			res.send("Welcome User <a href=\'/logout'>click to logout</a>");
 		} else
 			res.sendFile('views/index.html', { root: __dirname })
+	});
+
+	app.use(bodyParser.json());
+
+	app.get("/domains", async (req, res) => {
+		try {
+			const domains = await knex("domains").select("name");
+			res.json(domains.map((domain) => domain.name));
+		} catch (err) {
+			console.error(err);
+			res.status(500).json({ message: "Internal server error" });
+		}
+	});
+
+	app.post("/", async (req, res) => {
+		const { domains } = req.body;
+		try {
+			const response = await axios.get("https://newsapi.org/v2/top-headlines", {
+				params: {
+					apiKey: 'e188a3e6d6c64590be570b46271bd205',
+					sources: domains.join(","),
+				},
+			});
+			res.json(response.data);
+		} catch (err) {
+			console.error(err);
+			res.status(500).json({ message: "Internal server error" });
+		}
 	});
 
 	// POST method route
@@ -70,7 +99,7 @@ const setUpRoutes = (app) => {
 			}
 		}
 	})
-	app.get('/logout',(req,res) => {
+	app.get('/logout', (req, res) => {
 		req.session.destroy();
 		res.redirect('/');
 	});

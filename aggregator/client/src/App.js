@@ -6,6 +6,7 @@ import LoginForm from './LoginForm';
 import RegistrationForm from './RegistrationForm';
 import { Masonry } from '@mui/lab';
 import { createBrowserHistory } from "history";
+import FeedSelector from "./FeedSelector";
 
 const customHistory = createBrowserHistory();
 
@@ -38,6 +39,7 @@ const App = () => {
 						<Switch>
 							<Route path="/login" component={LoginForm}></Route>
 							<Route path="/register" component={RegistrationForm}></Route>
+							<Route path="/feedSelector" component={FeedSelector}></Route>
 							<Route exact path="/" component={Home}></Route>
 						</Switch>
 					</Router>

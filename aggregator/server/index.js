@@ -1,7 +1,6 @@
 //index.js
 const morgan = require('morgan')
 const { setUpRoutes } = require("./routes");
-const knexDB =  require('./knex');
 const express = require("express");
 const cors = require("cors");
 const app = express();

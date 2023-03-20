@@ -1,6 +1,7 @@
 import React from "react";
 import axios from 'axios';
 import {Paper} from '@mui/material'
+import FeedSelector from './FeedSelector'
 
 class Feed extends React.Component {
     constructor(props) {
@@ -38,7 +39,8 @@ class Feed extends React.Component {
     }
 
     componentDidMount() {
-        this.getHeadlines('reuters.com')
+        let sourceArray = JSON.parse(FeedSelector.selectedSources)
+        sourceArray.forEach(this.getHeadlines(sourceArray[0]))
     }
 
     render() {
