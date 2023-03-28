@@ -42,7 +42,7 @@ class Feed extends React.Component {
 				.catch((error) => this.setState({ error, isLoading: false }));
 		} else {
 			axios.get("https://newsapi.org/v2/top-headlines", {
-				params: { apiKey: "e188a3e6d6c64590be570b46271bd205" },
+				params: { country: "us", apiKey: "e188a3e6d6c64590be570b46271bd205" },
 			})
             // Once a response is obtained, map the API endpoints to props
             .then(response =>
