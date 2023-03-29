@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 
 const FeedSelector = (props) => {
-  const {sources, addSource, removeSource} = props;
-  const [selectedSources, setSelectedSources] = useState([]);
+  const { addSource, removeSource, selectedSources } = props;
+  const [sources, setSources] = useState([]);
 
   useEffect(() => {
     const fetchSources = async () => {
@@ -16,14 +16,13 @@ const FeedSelector = (props) => {
     fetchSources();
   }, []);
 
-  const handleSelectSource = (id) => {
-    const index = selectedSources.indexOf(id);
-    if (index === -1) {
-      addSource([...selectedSources, id]);
+  const handleSelectSource = (id, event) => {
+    const source = sources.find(x => x.id === id);
+    console.log(source)
+    if (event.target.checked) {
+      addSource(source);
     } else {
-      const newSources = [...selectedSources];
-      newSources.splice(index, 1);
-      addSource(newSources);
+      removeSource(source);
     }
   };
 
@@ -39,8 +38,8 @@ const FeedSelector = (props) => {
           <label>
             <input
               type="checkbox"
-              checked={selectedSources.includes(source.id)}
-              onChange={() => handleSelectSource(source.id)}
+              checked={selectedSources.some(item => item.id === source.id)}
+              onChange={(event) => handleSelectSource(source.id, event)}
             />
             {source.name}
           </label>

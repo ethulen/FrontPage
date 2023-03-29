@@ -21,12 +21,12 @@ const Home = () => {
 
 const App = () => {
 	const [checkedSources, setCheckedSources] = useState([]);
-	function addSource(url) {
-		const combinedSources = [...checkedSources, url];
+	function addSource(source) {
+		const combinedSources = [...checkedSources, source];
 		setCheckedSources(combinedSources);
 	}
-	function removeSource(url) {
-		const combinedSources = checkedSources.filter(source => source !== url);
+	function removeSource(source) {
+		const combinedSources = checkedSources.filter(item => item.id !== source.id);
 		setCheckedSources(combinedSources);
 	}
 	return (
