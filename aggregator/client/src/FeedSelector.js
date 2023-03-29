@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
-const FeedSelector = () => {
-  const [sources, setSources] = useState([]);
+const FeedSelector = (props) => {
+  const {addSource, removeSource} = props;
   const [selectedSources, setSelectedSources] = useState([]);
 
   useEffect(() => {
@@ -19,11 +19,11 @@ const FeedSelector = () => {
   const handleSelectSource = (id) => {
     const index = selectedSources.indexOf(id);
     if (index === -1) {
-      setSelectedSources([...selectedSources, id]);
+      addSource([...selectedSources, id]);
     } else {
       const newSources = [...selectedSources];
       newSources.splice(index, 1);
-      setSelectedSources(newSources);
+      addSource(newSources);
     }
   };
 

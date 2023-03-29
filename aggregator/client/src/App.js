@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Feed from "./Feed"
 import Header from "./Header"
 import { Link, Switch, Route, Router } from 'react-router-dom'
@@ -20,29 +20,40 @@ const Home = () => {
 }
 
 const App = () => {
+	const [sources, setSources] = useState([]);
+	function addSource(url) {
+		const combinedSources = [...sources, url];
+		setSources(combinedSources);
+	}
+	function removeSource(url) {
+		const combinedSources = sources.filter(source => source !== url);
+		setSources(combinedSources);
+	}
 	return (
 		<div className="home">
 			<Header />
 			<div align="right">
-					<Router history={customHistory}>
-						<nav>
-							<ul>
-								<>
-									<span><Link to={"/"}>Home</Link></span>
-									<span>   	</span>
-									<span><Link to={"/login"}>Login</Link></span>
-									<span>   	</span>
-									<span><Link to={"/register"}>Register</Link></span>
-								</>
-							</ul>
-						</nav>
-						<Switch>
-							<Route path="/login" component={LoginForm}></Route>
-							<Route path="/register" component={RegistrationForm}></Route>
-							<Route path="/feedSelector" component={FeedSelector}></Route>
-							<Route exact path="/" component={Home}></Route>
-						</Switch>
-					</Router>
+				<Router history={customHistory}>
+					<nav>
+						<ul>
+							<>
+								<span><Link to={"/"}>Home</Link></span>
+								<span>   	</span>
+								<span><Link to={"/login"}>Login</Link></span>
+								<span>   	</span>
+								<span><Link to={"/register"}>Register</Link></span>
+							</>
+						</ul>
+					</nav>
+					<Switch>
+						<Route path="/login" component={LoginForm}></Route>
+						<Route path="/register" component={RegistrationForm}></Route>
+						<Route path="/feedSelector" render={routeProps => (
+							<FeedSelector {...routeProps} sources={sources} addSource={addSource} removeSource={removeSource} />
+						)}></Route>
+						<Route exact path="/" component={Home}></Route>
+					</Switch>
+				</Router>
 			</div>
 		</div>
 	);
