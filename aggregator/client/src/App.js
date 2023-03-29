@@ -20,14 +20,14 @@ const Home = () => {
 }
 
 const App = () => {
-	const [sources, setSources] = useState([]);
+	const [checkedSources, setCheckedSources] = useState([]);
 	function addSource(url) {
-		const combinedSources = [...sources, url];
-		setSources(combinedSources);
+		const combinedSources = [...checkedSources, url];
+		setCheckedSources(combinedSources);
 	}
 	function removeSource(url) {
-		const combinedSources = sources.filter(source => source !== url);
-		setSources(combinedSources);
+		const combinedSources = checkedSources.filter(source => source !== url);
+		setCheckedSources(combinedSources);
 	}
 	return (
 		<div className="home">
