@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 const FeedSelector = (props) => {
-  const { addSource, removeSource, selectedSources } = props;
+  const {addSource, removeSource, selectedSources} = props;
   const [sources, setSources] = useState([]);
 
   useEffect(() => {

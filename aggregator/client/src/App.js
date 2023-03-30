@@ -49,7 +49,7 @@ const App = () => {
 						<Route path="/login" component={LoginForm}></Route>
 						<Route path="/register" component={RegistrationForm}></Route>
 						<Route path="/feedSelector" render={routeProps => (
-							<FeedSelector {...routeProps} sources={sources} addSource={addSource} removeSource={removeSource} />
+							<FeedSelector {...routeProps} selectedSources={checkedSources} addSource={addSource} removeSource={removeSource} />
 						)}></Route>
 						<Route exact path="/" component={Home}></Route>
 					</Switch>
