@@ -1,6 +1,13 @@
+const { createHash } = require('crypto');
+
+const jwt = require("jsonwebtoken");
+const hash = createHash('sha256');
 const knexDB = require("./knex");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
+let salt = bcrypt.genSalt(saltRounds, function(err, salt) {
+	// returns salt
+  });
 
 // middleware to test if authenticated
 function isAuthenticated(req, res, next) {
@@ -32,41 +39,46 @@ const setUpRoutes = (app) => {
 	});
 	// POST method route
 	app.post("/register", async (req, res) => {
-		//TODO: salt in addition to hash
-		console.log(req.body.sourceList);
-		password = await bcrypt.hash(req.body.password, saltRounds);
-		val = await knexDB("users").insert({
+		try {
+		  console.log(req.body.sourceList);
+		  const password = await bcrypt.genSalt(saltRounds, function(err, salt) {
+			bcrypt.hash(password, salt, function(err, hash) {
+			  // returns hash
+			  console.log(hash);
+			});
+		  });
+		  const val = await knexDB("users").insert({
 			username: req.body.name,
 			email: req.body.email,
 			password: password,
-		});
-		//TODO Error catching for duplicate
-		//send back response to client that user already exists
-		req.session.regenerate(async (err) => {
+		  });
+		  const user = await knexDB("users")
+			.select("id")
+			.where("email", req.body.email)
+			.first();
+		  console.log("userid " + user.id);
+		  req.session.user = user.id;
+	  
+		  req.session.save(function (err) {
 			if (err) {
-				console.log("Error!");
-				console.log(err);
-				next(err);
+			  console.log("Error2");
+			  console.log(err);
+			  return next(err);
 			}
-
-			var user = await knexDB("users")
-				.select("id")
-				.where("email", req.body.email)
-				.first();
-			console.log("userid " + user.id);
-			req.session.user = user.id;
-
-			req.session.save(function (err) {
-				if (err) {
-					console.log("Error2");
-					console.log(err);
-					return next(err);
-				}
-				console.log("saved");
-				res.status(200).json("Login Saved!");
-			});
-		});
-	});
+			console.log("saved");
+			res.status(200).json("Login Saved!");
+		  });
+		} catch (error) {
+		  if (error.code === 'ER_DUP_ENTRY') {
+			res.status(409).json({ message: 'User already exists' });
+		  } else {
+			console.log(error);
+			res.status(500).json({ message: 'Internal server error' });
+		  }
+		}
+	  });
+	  
+	
 	//POST sources route
 	app.post("/sourceSelect", isAuthenticated, async (req, res) => {
 		console.log(req.body.sourceList);
@@ -92,12 +104,13 @@ const setUpRoutes = (app) => {
 			// user already exists with that email
 			var existing_user = users[0];
 			//append salt to req.body.password
-			if (bcrypt.compare(req.body.password, existing_user.password)) {
-				session = req.session;
+			if (await bcrypt.compare(req.body.password, existing_user.password)) {
+				let session = req.session;
 				session.userid = req.body.username;
 				console.log(req.session);
-				//send hashed unique identifier
-				//TODO: create Javascript web token
+				const token = jwt.sign({ userId: user.id }, "secretKey", {
+					expiresIn: "1h",
+				  });				  
 				req.session.regenerate(async (err) => {
 					if (err) {
 						console.log("Error!");
@@ -105,14 +118,14 @@ const setUpRoutes = (app) => {
 						next(err);
 					}
 				});
-				console.log(req.params)
+				console.log(req.body)
 				var user = await knexDB("users")
 					.select("id")
-					.where("email", req.params.email)
+					.where("email", req.body.email)
 					.first();
 				console.log("userid " + user.id);
 				req.session.user = user.id;
-
+	
 				req.session.save(function (err) {
 					if (err) {
 						console.log("Error2");
@@ -122,12 +135,14 @@ const setUpRoutes = (app) => {
 					console.log("saved");
 					res.status(200).json("Login Saved!");
 				});
+				res.status(200).json({ token: token });
 			}
 			else {
 				res.status(403).json("Invalid username/password");
 			}
 		}
 	});
+	
 	app.get("/logout", (req, res) => {
 		req.session.destroy();
 		res.redirect("/");

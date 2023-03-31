@@ -10,13 +10,15 @@ const LoginForm = () => {
     const handleSubmit = (event) => {
 		//Prevent page reload
 		event.preventDefault();
-
+      console.log(event)
+      name = event.target[0].value
+      password = event.target[1].value
 		if (name === '' || password === '') {
 			setError(true);
 		} else {
 			setIsSubmitted(true);
 			setError(false);
-			axios.get("http://127.0.0.1:4000/login", { name, password }).then((response) => {
+			axios.post("http://127.0.0.1:4000/login", { name, password }).then((response) => {
 			console.log(response);
 		})
 		}

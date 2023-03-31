@@ -74,6 +74,7 @@ class Feed extends React.Component {
 	}
 
 	componentDidMount() {
+		if(this.id !== undefined){
 		axios
 		.get(`http://localhost:4000/user/${this.id}`).then((response) => {
 			if (
@@ -88,8 +89,10 @@ class Feed extends React.Component {
 			} else {
 				this.getHeadlines(this.sources);
 			}
-		})
-		
+		})}
+		else{
+			this.getHeadlines(null)
+		}
 	}
 
 	render() {
