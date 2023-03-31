@@ -11,6 +11,7 @@ class Feed extends React.Component {
 			errors: null,
 		};
 	}
+	
 	getHeadlines(sources) {
 		// Axios fetches headlines
 		if (sources != null) {
@@ -50,41 +51,45 @@ class Feed extends React.Component {
 			axios.get("https://newsapi.org/v2/top-headlines", {
 				params: { country: "us", apiKey: "e188a3e6d6c64590be570b46271bd205" },
 			})
-				// Once a response is obtained, map the API endpoints to props
-				.then(response =>
-					response.data.articles.map(news => ({
-						title: `${news.title}`,
-						description: `${news.description}`,
-						author: `${news.author}`,
-						newsurl: `${news.url}`,
-						url: `${news.urlToImage}`
-					}))
-				)
-				// Change the loading state to display the data
-				.then(headlinesNews => {
-					this.setState({
-						headlinesNews,
-						isLoading: false
-					});
-				})
-				// Use the `.catch()` method since axios is promise-based
-				.catch(error => this.setState({ error, isLoading: false }));
+            // Once a response is obtained, map the API endpoints to props
+            .then(response =>
+                response.data.articles.map(news => ({
+                    title: `${news.title}`,
+                    description: `${news.description}`,
+                    author: `${news.author}`,
+                    newsurl: `${news.url}`,
+                    url: `${news.urlToImage}`
+                }))
+            )
+            // Change the loading state to display the data
+            .then(headlinesNews => {
+                this.setState({
+                    headlinesNews,
+                    isLoading: false
+                });
+            })
+            // Use the `.catch()` method since axios is promise-based
+            .catch(error => this.setState({ error, isLoading: false }));
 		}
 	}
 
 	componentDidMount() {
-		axios.get("http://localhost:4000/", { withCredentials: true }).then((response) => {
-			console.log(response);
+		axios
+		.get(`http://localhost:4000/user/${this.id}`).then((response) => {
 			if (
-				response !== undefined &&
-				response !== null &&
-				response.length > 0
+				response.data !== undefined &&
+				response.data !== null &&
+				response.data.length > 0
 			) {
-				this.getHeadlines(response);
+				let sourceArray = JSON.parse(
+					response.data
+				);
+				this.getHeadlines(sourceArray);
 			} else {
 				this.getHeadlines(this.sources);
 			}
 		})
+		
 	}
 
 	render() {
