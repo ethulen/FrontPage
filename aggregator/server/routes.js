@@ -6,6 +6,10 @@ const knexDB = require("./knex");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 
+var g = require('ger')
+var esm = new g.MemESM()
+var ger = new g.GER(esm);
+
 // middleware to test if authenticated
 function isAuthenticated(req, res, next) {
 	console.log(req.cookies);
@@ -34,6 +38,29 @@ const setUpRoutes = (app) => {
 		});
 		res.status(200).json(sources[0]);
 	});
+	app.get("/user/:id/recommended"){
+		//TODO: change after making database table
+		//return ger.recommendations_for_person('movies', 'alice', {actions: {likes: 1}})
+	}
+	app.post("/user/:id/clicks"){
+		try{
+		const val = await knexDB("recommendations").insert({
+			namespace: 'news',
+      		person: req.body.name,
+      		action: 'clicks',
+     		thing: req.body.article,
+      		expires_at: '2024-06-06'
+		  });
+		}
+		catch(error) {
+			if (error.code === 'ER_DUP_ENTRY') {
+			  res.status(409).json({ message: 'Entry already exists' });
+			} else {
+			  console.log(error);
+			  res.status(500).json({ message: 'Internal server error' });
+			}
+		}
+	}
 	// POST method route
 	app.post("/register", async (req, res) => {
 		try {

@@ -12,6 +12,10 @@ class Feed extends React.Component {
 		};
 		const {loggedInAccount} = props;
 	}
+
+	getRecommendedArticles(){
+		axios.get("http://localhost:3000/user/:id/recommended")
+	}
 	
 	getHeadlines(sources) {
 		console.log(sources)
