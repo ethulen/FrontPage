@@ -55,7 +55,9 @@ const setUpRoutes = (app) => {
 			.first();
 		  console.log("userid " + user.id);
 		  req.session.user = user.id;
-	  
+		  const token = jwt.sign({ userId: req.session.user }, "secretKey", {
+			expiresIn: "1h",
+		  });
 		  req.session.save(function (err) {
 			if (err) {
 			  console.log("Error2");
@@ -63,7 +65,7 @@ const setUpRoutes = (app) => {
 			  return next(err);
 			}
 			console.log("saved");
-			res.status(200).json({ message:"Login Saved!"});
+			res.status(200).json({ token: token });
 		  });
 		} catch (error) {
 		  if (error.code === 'ER_DUP_ENTRY') {
