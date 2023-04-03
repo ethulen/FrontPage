@@ -42,6 +42,8 @@ const App = () => {
 								<span><Link to={"/login"}>Login</Link></span>
 								<span>   	</span>
 								<span><Link to={"/register"}>Register</Link></span>
+								<span>   	</span>
+								<span><Link to={"/logout"}>Logout</Link></span>
 							</>
 						</ul>
 					</nav>

@@ -39,16 +39,6 @@ const setUpRoutes = (app) => {
 
 	app.use(bodyParser.json());
 
-	app.get("/domains", async (req, res) => {
-		try {
-			const domains = await knex("domains").select("name");
-			res.json(domains.map((domain) => domain.name));
-		} catch (err) {
-			console.error(err);
-			res.status(500).json({ message: "Internal server error" });
-		}
-	});
-
 	app.post("/", async (req, res) => {
 		const { domains } = req.body;
 		try {
@@ -68,11 +58,20 @@ const setUpRoutes = (app) => {
 	// POST method route
 	app.post("/register", async (req, res) => {
 		//TODO: salt in addition to hash
-		password = bcrypt.hash(req.body.password, saltRounds);
+		console.log(req.body)
+		password = await bcrypt.hash(req.body.password, saltRounds);
 		val = await knexDB("users").insert({
 			username: req.body.name,
 			email: req.body.email,
 			password: password,
+		});
+		res.send("POST request to the homepage");
+	});
+	//POST sources route
+	app.post("/sourceSelect", async (req, res) => {
+		console.log(req.body.sources)
+		val = await knexDB("users").insert({
+			sources: req.body.sources
 		});
 		res.send("POST request to the homepage");
 	});
@@ -92,6 +91,8 @@ const setUpRoutes = (app) => {
 				session = req.session;
 				session.userid = req.body.username;
 				console.log(req.session)
+				//send hashed unique identifier
+				//TODO: create Javascript web token
 				res.send("Success");
 			}
 			else {
@@ -101,6 +102,8 @@ const setUpRoutes = (app) => {
 	})
 	app.get('/logout', (req, res) => {
 		req.session.destroy();
+		req.sources = null;
+		cookies.remove('http://localhost:3000')
 		res.redirect('/');
 	});
 };

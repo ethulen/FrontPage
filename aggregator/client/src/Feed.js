@@ -14,10 +14,16 @@ class Feed extends React.Component {
 	getHeadlines(sources) {
 		// Axios fetches headlines
 		if (sources != null) {
+			let output = ""
+			console.log(sources)
+			for (var s in sources) {
+				console.log(s)
+				output = output + sources[s].id + ","
+			}
 			axios
 				.get("https://newsapi.org/v2/everything", {
 					params: {
-						domains: sources,
+						sources: output,
 						apiKey: "e188a3e6d6c64590be570b46271bd205",
 					},
 				})
@@ -44,25 +50,25 @@ class Feed extends React.Component {
 			axios.get("https://newsapi.org/v2/top-headlines", {
 				params: { country: "us", apiKey: "e188a3e6d6c64590be570b46271bd205" },
 			})
-            // Once a response is obtained, map the API endpoints to props
-            .then(response =>
-                response.data.articles.map(news => ({
-                    title: `${news.title}`,
-                    description: `${news.description}`,
-                    author: `${news.author}`,
-                    newsurl: `${news.url}`,
-                    url: `${news.urlToImage}`
-                }))
-            )
-            // Change the loading state to display the data
-            .then(headlinesNews => {
-                this.setState({
-                    headlinesNews,
-                    isLoading: false
-                });
-            })
-            // Use the `.catch()` method since axios is promise-based
-            .catch(error => this.setState({ error, isLoading: false }));
+				// Once a response is obtained, map the API endpoints to props
+				.then(response =>
+					response.data.articles.map(news => ({
+						title: `${news.title}`,
+						description: `${news.description}`,
+						author: `${news.author}`,
+						newsurl: `${news.url}`,
+						url: `${news.urlToImage}`
+					}))
+				)
+				// Change the loading state to display the data
+				.then(headlinesNews => {
+					this.setState({
+						headlinesNews,
+						isLoading: false
+					});
+				})
+				// Use the `.catch()` method since axios is promise-based
+				.catch(error => this.setState({ error, isLoading: false }));
 		}
 	}
 
@@ -73,11 +79,6 @@ class Feed extends React.Component {
 			jsonString !== null &&
 			jsonString.length > 0
 		) {
-			let sourceArray = JSON.parse(
-				localStorage.getItem("selectedSources")
-			);
-			this.getHeadlines(sourceArray);
-		} else {
 			this.getHeadlines(this.sources);
 		}
 	}

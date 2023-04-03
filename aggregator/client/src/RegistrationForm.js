@@ -78,7 +78,7 @@ const RegistrationForm = () => {
 				<h2>User Registration</h2>
 			</div>
 
-			<form>
+			<div>
 				{/* Labels and inputs for form data */}
 				<label className="label">Name: </label>
 				<input onChange={handleName} className="input"
@@ -95,7 +95,7 @@ const RegistrationForm = () => {
 				<button onClick={handleSubmit} className="btn" type="submit">
 					Submit
 				</button>
-			</form>
+			</div>
 			{/* Calling to the methods */}
 			<div className="messages">
 				{errorMessage()}

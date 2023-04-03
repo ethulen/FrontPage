@@ -1,8 +1,23 @@
 import React, { useState, useEffect } from "react";
+import natural from "natural";
+import axios from 'axios';
+
+const calculateTfIdf = (doc, docs) => {
+  const tfidf = new natural.TfIdf();
+  docs.forEach((d) => tfidf.addDocument(d));
+  const terms = doc.split(" ");
+  const scores = {};
+  terms.forEach((term) => {
+    const tfidfScore = tfidf.tfidf(term, docs.indexOf(doc));
+    scores[term] = tfidfScore;
+  });
+  return scores;
+};
 
 const FeedSelector = (props) => {
   const {addSource, removeSource, selectedSources} = props;
   const [sources, setSources] = useState([]);
+  const [userTopics, setUserTopics] = useState([]);
 
   useEffect(() => {
     const fetchSources = async () => {
@@ -16,9 +31,29 @@ const FeedSelector = (props) => {
     fetchSources();
   }, []);
 
+  // useEffect(() => {
+  //   const docs = selectedSources.map((source) => source.name.toLowerCase());
+  //   const tfidfScores = {};
+  //   selectedSources.forEach((source) => {
+  //     const keywords = sources.keywords.split(",");
+  //     keywords.forEach((keyword) => {
+  //       const scores = calculateTfIdf(keyword, docs);
+  //       if (tfidfScores[keyword]) {
+  //         tfidfScores[keyword] = tfidfScores[keyword] + scores[keyword];
+  //       } else {
+  //         tfidfScores[keyword] = scores[keyword];
+  //       }
+  //     });
+  //   });
+  //   const topics = Object.keys(tfidfScores).map((keyword) => ({
+  //     name: keyword,
+  //     score: tfidfScores[keyword],
+  //   }));
+  //   setUserTopics(topics);
+  // }, [selectedSources]);
+
   const handleSelectSource = (id, event) => {
     const source = sources.find(x => x.id === id);
-    console.log(source)
     if (event.target.checked) {
       addSource(source);
     } else {
@@ -27,9 +62,16 @@ const FeedSelector = (props) => {
   };
 
   const handleSaveSources = () => {
-    localStorage.setItem("selectedSources", JSON.stringify(selectedSources));
+    const sourceList = selectedSources.map((source) => ({
+      source: source,
+    }))
+    console.log(sourceList)
+    axios.post("http://127.0.0.1:4000/sourceSelect", { sourceList }).then((response) => {
+			console.log(response);
+		})
     window.location.href = "http://localhost:3000/"
   };
+  
   return (
     <div>
       <h2>News Sources</h2>
@@ -46,6 +88,15 @@ const FeedSelector = (props) => {
         </div>
       ))}
       <button onClick={handleSaveSources}>Save Sources</button>
+      
+      {/* <h2>User Topics</h2>
+      <ul>
+        {userTopics.map((topic) => (
+          <li key={topic.name}>
+            {topic.name}: {topic.score}
+          </li>
+        ))}
+      </ul> */}
     </div>
   );
 };
