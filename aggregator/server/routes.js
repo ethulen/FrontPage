@@ -1,32 +1,19 @@
 const knexDB = require("./knex");
 const bcrypt = require("bcrypt");
-const express = require('express')
-const cookieParser = require("cookie-parser");
-const bodyParser = require("body-parser");
-const sessions = require('express-session');
 const saltRounds = 10;
-const app = express();
 
-const oneDay = 1000 * 60 * 60 * 24;
-app.use(sessions({
-	secret: "iunfvuieanfcaoirghaiwefnaeriupth5657563w43",
-	saveUninitialized: true,
-	cookie: { maxAge: oneDay },
-	resave: false
-}));
-
-// parsing the incoming data
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-//serving public file
-app.use(express.static(__dirname));
-
-// cookie parser middleware
-app.use(cookieParser());
-
-// a variable to save a session
-var session;
+// middleware to test if authenticated
+function isAuthenticated (req, res, next) {
+	console.log(req.cookies)
+  if (req.session.user){
+		console.log("User Authenticated " + req.session.user)
+		next()
+	}
+  else{
+		console.log("Unauthenticated User!")
+		next('route')
+	}
+}
 
 const setUpRoutes = (app) => {
 	app.get('/', (req, res) => {
@@ -36,8 +23,6 @@ const setUpRoutes = (app) => {
 		} else
 			res.sendFile('views/index.html', { root: __dirname })
 	});
-
-	app.use(bodyParser.json());
 
 	app.post("/", async (req, res) => {
 		const { domains } = req.body;
@@ -58,20 +43,43 @@ const setUpRoutes = (app) => {
 	// POST method route
 	app.post("/register", async (req, res) => {
 		//TODO: salt in addition to hash
-		console.log(req.body)
+		console.log(req.body.sourceList)
 		password = await bcrypt.hash(req.body.password, saltRounds);
 		val = await knexDB("users").insert({
-			username: req.body.name,
+			name: req.body.name,
 			email: req.body.email,
 			password: password,
 		});
-		res.send("POST request to the homepage");
+		req.session.regenerate(async (err) => {
+			if (err){
+				console.log("Error!")
+				console.log(err)
+				next(err)
+			}
+
+			var user = await knexDB("users").select('id').where('email', req.body.email).first();
+			console.log("userid " + user.id)
+			req.session.user = user.id
+
+			req.session.save(function (err) {
+				if (err) {
+					console.log("Error2")
+					console.log(err)
+					return next(err)
+				}
+				console.log("saved");
+				res.status(200).json("Login Saved!")
+			})
+		});
+
 	});
 	//POST sources route
-	app.post("/sourceSelect", async (req, res) => {
-		console.log(req.body.sources)
-		val = await knexDB("users").insert({
-			sources: req.body.sources
+	app.post("/sourceSelect", isAuthenticated, async (req, res) => {
+		console.log(req.body.sourceList)
+		console.log(req.cookies)
+		console.log("userid " + req.session.user)
+		val = await knexDB("users").where('id', req.session.user).update({
+			sources: JSON.stringify(req.body.sourceList)
 		});
 		res.send("POST request to the homepage");
 	});

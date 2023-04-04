@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useHistory } from "react-router-dom";
 
 const RegistrationForm = () => {
 
@@ -29,7 +30,8 @@ const RegistrationForm = () => {
 		setPassword(e.target.value);
 		setSubmitted(false);
 	};
-
+	
+	const history = useHistory();
 	// Handling the form submission
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -38,11 +40,11 @@ const RegistrationForm = () => {
 		} else {
 			setSubmitted(true);
 			setError(false);
-			window.location.href = "http://localhost:3000/feedSelector"
+			axios.post("http://localhost:4000/register", { name, email, password }, { withCredentials: true }).then((response) => {
+				console.log(response);
+				history.push("/feedSelector");
+			})
 		}
-		axios.post("http://127.0.0.1:4000/register", { name, email, password }).then((response) => {
-			console.log(response);
-		})
 	};
 
 	// Showing success message

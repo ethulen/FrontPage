@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useHistory  } from "react-router-dom";
 import natural from "natural";
 import axios from 'axios';
 
@@ -18,6 +19,7 @@ const FeedSelector = (props) => {
   const {addSource, removeSource, selectedSources} = props;
   const [sources, setSources] = useState([]);
   const [userTopics, setUserTopics] = useState([]);
+  const history = useHistory ();
 
   useEffect(() => {
     const fetchSources = async () => {
@@ -66,10 +68,10 @@ const FeedSelector = (props) => {
       source: source,
     }))
     console.log(sourceList)
-    axios.post("http://127.0.0.1:4000/sourceSelect", { sourceList }).then((response) => {
+    axios.post("http://localhost:4000/sourceSelect", { sourceList }, { withCredentials: true }).then((response) => {
 			console.log(response);
+      history.push('/');
 		})
-    window.location.href = "http://localhost:3000/"
   };
   
   return (

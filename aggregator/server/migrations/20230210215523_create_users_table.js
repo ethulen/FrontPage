@@ -9,7 +9,7 @@ exports.up = function(knex) {
       table.string('name', 20).unique().notNullable()
       table.string('email', 40).unique().notNullable()
       table.string('password', 255).notNullable()
-      table.text('preferences')
+      table.json('sources')
       table.timestamp('created_at').defaultTo(knex.fn.now())
       table.timestamp('updated_at').defaultTo(knex.fn.now())
     })
