@@ -64,10 +64,8 @@ const FeedSelector = (props) => {
   };
 
   const handleSaveSources = () => {
-    const sourceList = selectedSources.map((source) => ({
-      source: source,
-    }))
-    console.log(sourceList)
+    const sourceList = selectedSources.map((source) => (
+      source.id))
     axios.post("http://localhost:4000/sourceSelect", { sourceList }, { withCredentials: true }).then((response) => {
 			console.log(response);
       history.push('/');

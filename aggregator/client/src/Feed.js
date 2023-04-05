@@ -73,14 +73,18 @@ class Feed extends React.Component {
 	}
 
 	componentDidMount() {
-		let jsonString = localStorage.getItem("selectedSources");
-		if (
-			jsonString !== undefined &&
-			jsonString !== null &&
-			jsonString.length > 0
-		) {
-			this.getHeadlines(this.sources);
-		}
+		axios.get("http://localhost:4000/", { withCredentials: true }).then((response) => {
+			console.log(response);
+			if (
+				response !== undefined &&
+				response !== null &&
+				response.length > 0
+			) {
+				this.getHeadlines(response);
+			} else {
+				this.getHeadlines(this.sources);
+			}
+		})
 	}
 
 	render() {

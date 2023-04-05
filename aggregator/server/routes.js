@@ -16,37 +16,26 @@ function isAuthenticated (req, res, next) {
 }
 
 const setUpRoutes = (app) => {
-	app.get('/', (req, res) => {
-		session = req.session;
-		if (session.userid) {
-			res.send("Welcome User <a href=\'/logout'>click to logout</a>");
-		} else
-			res.sendFile('views/index.html', { root: __dirname })
-	});
-
-	app.post("/", async (req, res) => {
-		const { domains } = req.body;
-		try {
-			const response = await axios.get("https://newsapi.org/v2/top-headlines", {
-				params: {
-					apiKey: 'e188a3e6d6c64590be570b46271bd205',
-					sources: domains.join(","),
-				},
-			});
-			res.json(response.data);
-		} catch (err) {
-			console.error(err);
-			res.status(500).json({ message: "Internal server error" });
-		}
-	});
-
+	//GET method route for sources
+	app.get("/", async (req, res) => {
+		var sources = await knexDB("users").select('sources').where('sources', req.body.sources);
+		console.log(sources)
+		req.session.regenerate(async (err) => {
+			if (err){
+				console.log("Error!")
+				console.log(err)
+				next(err)
+			}
+		})
+		res.status(200).json("Sources Retrieved")
+	})
 	// POST method route
 	app.post("/register", async (req, res) => {
 		//TODO: salt in addition to hash
 		console.log(req.body.sourceList)
 		password = await bcrypt.hash(req.body.password, saltRounds);
 		val = await knexDB("users").insert({
-			name: req.body.name,
+			username: req.body.name,
 			email: req.body.email,
 			password: password,
 		});
@@ -101,17 +90,32 @@ const setUpRoutes = (app) => {
 				console.log(req.session)
 				//send hashed unique identifier
 				//TODO: create Javascript web token
-				res.send("Success");
-			}
-			else {
-				res.send("Invalid username/password");
+				req.session.regenerate(async (err) => {
+					if (err){
+						console.log("Error!")
+						console.log(err)
+						next(err)
+					}
+		
+					var user = await knexDB("users").select('id').where('email', req.body.email).first();
+					console.log("userid " + user.id)
+					req.session.user = user.id
+		
+					req.session.save(function (err) {
+						if (err) {
+							console.log("Error2")
+							console.log(err)
+							return next(err)
+						}
+						console.log("saved");
+						res.status(200).json("Login Saved!")
+					})
+				});
 			}
 		}
 	})
 	app.get('/logout', (req, res) => {
 		req.session.destroy();
-		req.sources = null;
-		cookies.remove('http://localhost:3000')
 		res.redirect('/');
 	});
 };
