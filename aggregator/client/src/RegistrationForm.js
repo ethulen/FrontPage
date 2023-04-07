@@ -39,7 +39,8 @@ const RegistrationForm = () => {
 			setError(true);
 		} else {
 			setSubmitted(true);
-			setError(false);
+			setError(false)
+			//add salt from crypto to password
 			axios.post("http://localhost:4000/register", { name, email, password }, { withCredentials: true }).then((response) => {
 				console.log(response);
 				history.push("/feedSelector");

@@ -30,24 +30,6 @@ const setUpRoutes = (app) => {
 		});
 		res.status(200).json("Sources Retrieved");
 	});
-	app.get("/user/:userid", async (req, res) => {
-		var user = await knexDB("users")
-			.select("id")
-			.where("email", req.body.email)
-			.first();
-		console.log("userid " + user.id);
-		req.session.user = user.id;
-
-		req.session.save(function (err) {
-			if (err) {
-				console.log("Error2");
-				console.log(err);
-				return next(err);
-			}
-			console.log("saved");
-			res.status(200).json("Login Saved!");
-		});
-	});
 	// POST method route
 	app.post("/register", async (req, res) => {
 		//TODO: salt in addition to hash
@@ -58,6 +40,8 @@ const setUpRoutes = (app) => {
 			email: req.body.email,
 			password: password,
 		});
+		//TODO Error catching for duplicate
+		//send back response to client that user already exists
 		req.session.regenerate(async (err) => {
 			if (err) {
 				console.log("Error!");
@@ -107,7 +91,8 @@ const setUpRoutes = (app) => {
 		} else {
 			// user already exists with that email
 			var existing_user = users[0];
-			if (bcrypt.compareSync(req.body.password, existing_user.password)) {
+			//append salt to req.body.password
+			if (bcrypt.compare(req.body.password, existing_user.password)) {
 				session = req.session;
 				session.userid = req.body.username;
 				console.log(req.session);
@@ -120,6 +105,26 @@ const setUpRoutes = (app) => {
 						next(err);
 					}
 				});
+				console.log(req.params)
+				var user = await knexDB("users")
+					.select("id")
+					.where("email", req.params.email)
+					.first();
+				console.log("userid " + user.id);
+				req.session.user = user.id;
+
+				req.session.save(function (err) {
+					if (err) {
+						console.log("Error2");
+						console.log(err);
+						return next(err);
+					}
+					console.log("saved");
+					res.status(200).json("Login Saved!");
+				});
+			}
+			else {
+				res.status(403).json("Invalid username/password");
 			}
 		}
 	});
