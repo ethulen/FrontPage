@@ -23,7 +23,7 @@ function isAuthenticated(req, res, next) {
 
 const setUpRoutes = (app) => {
 	//GET method route for sources
-	app.get("/", async (req, res) => {
+	app.get("/user/:id", async (req, res) => {
 		var sources = await knexDB("users")
 			.select("sources")
 			.where("sources", req.body.sources);
@@ -54,7 +54,7 @@ const setUpRoutes = (app) => {
 		  });
 		  const user = await knexDB("users")
 			.select("id")
-			.where("email", req.body.email)
+			.where("username", req.body.name)
 			.first();
 		  console.log("userid " + user.id);
 		  req.session.user = user.id;
@@ -106,11 +106,7 @@ const setUpRoutes = (app) => {
 			//append salt to req.body.password
 			if (await bcrypt.compare(req.body.password, existing_user.password)) {
 				let session = req.session;
-				session.userid = req.body.username;
-				console.log(req.session);
-				const token = jwt.sign({ userId: user.id }, "secretKey", {
-					expiresIn: "1h",
-				  });				  
+				console.log(req.session);				  
 				req.session.regenerate(async (err) => {
 					if (err) {
 						console.log("Error!");
@@ -121,11 +117,13 @@ const setUpRoutes = (app) => {
 				console.log(req.body)
 				var user = await knexDB("users")
 					.select("id")
-					.where("email", req.body.email)
+					.where("username", req.body.name)
 					.first();
 				console.log("userid " + user.id);
 				req.session.user = user.id;
-	
+				const token = jwt.sign({ userId: req.session.user }, "secretKey", {
+					expiresIn: "1h",
+				  });
 				req.session.save(function (err) {
 					if (err) {
 						console.log("Error2");
@@ -133,9 +131,8 @@ const setUpRoutes = (app) => {
 						return next(err);
 					}
 					console.log("saved");
-					res.status(200).json("Login Saved!");
+					res.status(200).json({ token: token });
 				});
-				res.status(200).json({ token: token });
 			}
 			else {
 				res.status(403).json("Invalid username/password");
