@@ -2,6 +2,8 @@ import React from "react";
 import axios from "axios";
 import { Paper } from "@mui/material";
 
+const {loggedInAccount} = props
+
 class Feed extends React.Component {
 	constructor(props) {
 		super(props);
@@ -9,10 +11,8 @@ class Feed extends React.Component {
 			headlinesNews: [],
 			isLoading: true,
 			errors: null,
-			loggedInAccount: 0,
 		};
 	}
-	
 	getHeadlines(sources) {
 		// Axios fetches headlines
 		if (sources != null) {
@@ -75,9 +75,9 @@ class Feed extends React.Component {
 	}
 
 	componentDidMount() {
-		if(this.id !== undefined){
+		if(loggedInAccount !== undefined){
 		axios
-		.get(`http://localhost:4000/user/${this.id}`).then((response) => {
+		.get(`http://localhost:4000/user/${loggedInAccount}`).then((response) => {
 			if (
 				response.data !== undefined &&
 				response.data !== null &&

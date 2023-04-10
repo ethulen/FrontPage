@@ -1,26 +1,16 @@
 import React, { useState } from "react";
-import Feed from "./Feed"
 import Header from "./Header"
 import { Link, Switch, Route, Router } from 'react-router-dom'
 import LoginForm from './LoginForm';
 import RegistrationForm from './RegistrationForm';
-import { Masonry } from '@mui/lab';
 import { createBrowserHistory } from "history";
 import FeedSelector from "./FeedSelector";
+import Home from "./Home"
 
 const customHistory = createBrowserHistory();
 
-const Home = () => {
-	const [loggedInAccount, setLoggedInAccount] = useState(0);
-	return (
-		<form className="home__form">
-			<Masonry columns={2} spacing={2}>
-				<Feed loggedInAccount={loggedInAccount} setLoggedInAccount={setLoggedInAccount}/>
-			</Masonry>
-		</form>)
-}
-
 const App = () => {
+	const [loggedInAccount, setLoggedInAccount] = useState(0);
 	const [checkedSources, setCheckedSources] = useState([]);
 	function addSource(source) {
 		const combinedSources = [...checkedSources, source];
@@ -49,7 +39,9 @@ const App = () => {
 						</ul>
 					</nav>
 					<Switch>
-						<Route path="/login" component={LoginForm}></Route>
+						<Route path="/login" component={(routeProps) => 
+							<LoginForm {...routeProps} setLoggedInAccount={setLoggedInAccount}/>
+						}></Route>
 						<Route path="/register" component={RegistrationForm}></Route>
 						<Route path="/feedSelector" render={routeProps => (
 							<FeedSelector {...routeProps} selectedSources={checkedSources} addSource={addSource} removeSource={removeSource} />
