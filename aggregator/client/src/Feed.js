@@ -9,6 +9,7 @@ class Feed extends React.Component {
 			headlinesNews: [],
 			isLoading: true,
 			errors: null,
+			loggedInAccount: 0,
 		};
 	}
 	

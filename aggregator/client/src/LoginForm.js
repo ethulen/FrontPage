@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import {Redirect} from 'react-router-dom';
 import axios from 'axios';
+import jwt_decode from "jwt-decode";
 
-const LoginForm = () => {
+const LoginForm = (props) => {
+  const {loggedInAccount, setLoggedInAccount} = props
 	const [error, setError] = useState({});
 	const [isSubmitted, setIsSubmitted] = useState(false);
 	let name, password;
@@ -20,6 +22,11 @@ const LoginForm = () => {
 			setError(false);
 			axios.post("http://127.0.0.1:4000/login", { name, password }).then((response) => {
 			console.log(response);
+      if (response.data.token) {
+        var decoded = jwt_decode(response.data.token);
+        console.log(decoded)
+        setLoggedInAccount(decoded.userId);
+      }
 		})
 		}
 		
@@ -53,7 +60,7 @@ const LoginForm = () => {
         <div className="app">
           <div className="login-form">
             <div className="title" style={{paddingTop: 18}}><h2>Sign In</h2></div>
-            {isSubmitted ? <Redirect to='/'/>: renderForm}
+            {isSubmitted && loggedInAccount !== null ? <Redirect to='/'/>: renderForm}
           </div>
         </div>
       );

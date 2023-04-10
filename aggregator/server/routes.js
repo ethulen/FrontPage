@@ -5,9 +5,6 @@ const hash = createHash('sha256');
 const knexDB = require("./knex");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
-let salt = bcrypt.genSalt(saltRounds, function(err, salt) {
-	// returns salt
-  });
 
 // middleware to test if authenticated
 function isAuthenticated(req, res, next) {

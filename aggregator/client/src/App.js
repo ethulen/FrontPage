@@ -11,10 +11,11 @@ import FeedSelector from "./FeedSelector";
 const customHistory = createBrowserHistory();
 
 const Home = () => {
+	const [loggedInAccount, setLoggedInAccount] = useState(0);
 	return (
 		<form className="home__form">
 			<Masonry columns={2} spacing={2}>
-				<Feed />
+				<Feed loggedInAccount={loggedInAccount} setLoggedInAccount={setLoggedInAccount}/>
 			</Masonry>
 		</form>)
 }
