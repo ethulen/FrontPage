@@ -11,6 +11,7 @@ class Feed extends React.Component {
 			errors: null,
 		};
 	}
+	
 	getHeadlines(sources) {
 		// Axios fetches headlines
 		if (sources != null) {
@@ -73,9 +74,9 @@ class Feed extends React.Component {
 	}
 
 	componentDidMount() {
-		if(this.props.loggedInAccount !== undefined){
+		if(this.id !== undefined){
 		axios
-		.get(`http://localhost:4000/user/${this.props.loggedInAccount}`).then((response) => {
+		.get(`http://localhost:4000/user/${this.id}`).then((response) => {
 			if (
 				response.data !== undefined &&
 				response.data !== null &&

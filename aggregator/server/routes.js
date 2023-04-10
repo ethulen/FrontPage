@@ -22,8 +22,8 @@ const setUpRoutes = (app) => {
 	//GET method route for sources
 	app.get("/user/:id", async (req, res) => {
 		var sources = await knexDB("users")
-			.select("id")
-			.where("sources", req.body.sources);
+			.select("sources")
+			.where("id", req.params.id);
 		console.log(sources);
 		req.session.regenerate(async (err) => {
 			if (err) {
@@ -32,7 +32,7 @@ const setUpRoutes = (app) => {
 				next(err);
 			}
 		});
-		res.status(200).json("Sources Retrieved");
+		res.status(200).json({ message:"Sources Retrieved"});
 	});
 	// POST method route
 	app.post("/register", async (req, res) => {
@@ -63,7 +63,7 @@ const setUpRoutes = (app) => {
 			  return next(err);
 			}
 			console.log("saved");
-			res.status(200).json("Login Saved!");
+			res.status(200).json({ message:"Login Saved!"});
 		  });
 		} catch (error) {
 		  if (error.code === 'ER_DUP_ENTRY') {

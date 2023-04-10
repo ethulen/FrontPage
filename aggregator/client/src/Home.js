@@ -2,8 +2,8 @@ import React, {useState} from "react"
 import Feed from "./Feed"
 import { Masonry } from '@mui/lab';
 
-const Home = () => {
-	const loggedInAccount = useState(0);
+const Home = (props) => {
+	const {loggedInAccount} = props;
 	return (
 		<form className="home__form">
 			<Masonry columns={2} spacing={2}>
