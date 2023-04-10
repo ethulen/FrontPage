@@ -22,7 +22,7 @@ const setUpRoutes = (app) => {
 	//GET method route for sources
 	app.get("/user/:id", async (req, res) => {
 		var sources = await knexDB("users")
-			.select("sources")
+			.select("id")
 			.where("sources", req.body.sources);
 		console.log(sources);
 		req.session.regenerate(async (err) => {
