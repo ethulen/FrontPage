@@ -32,7 +32,7 @@ const setUpRoutes = (app) => {
 				next(err);
 			}
 		});
-		res.status(200).json({ message:"Sources Retrieved"});
+		res.status(200).json(sources[0]);
 	});
 	// POST method route
 	app.post("/register", async (req, res) => {

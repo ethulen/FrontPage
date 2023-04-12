@@ -14,13 +14,15 @@ class Feed extends React.Component {
 	}
 	
 	getHeadlines(sources) {
+		console.log(sources)
 		// Axios fetches headlines
 		if (sources != null) {
 			let output = ""
+			sources = JSON.parse(sources)
 			console.log(sources)
 			for (var s in sources) {
 				console.log(s)
-				output = output + sources[s].id + ","
+				output = output + sources[s] + ","
 			}
 			axios
 				.get("https://newsapi.org/v2/everything", {
@@ -76,24 +78,20 @@ class Feed extends React.Component {
 
 	componentDidMount() {
 		console.log("feed mounted")
-		console.log(this.loggedInAccount)
-		if(this.loggedInAccount !== undefined){
+		console.log(this.props.loggedInAccount)
+		if(this.props.loggedInAccount !== undefined){
 		axios
-		.get(`http://localhost:4000/user/${this.loggedInAccount}`).then((response) => {
+		.get(`http://localhost:4000/user/${this.props.loggedInAccount}`).then((response) => {
+			console.log(response.data)
 			if (
 				response.data !== undefined &&
-				response.data !== null &&
-				response.data.length > 0
+				response.data !== null 
 			) {
-				let sourceArray = JSON.parse(
-					response.data
-				);
-				this.getHeadlines(sourceArray);
-			} else {
-				this.getHeadlines(this.sources);
-			}
+				this.getHeadlines(response.data.sources);
+			} 
 		})}
 		else{
+			console.log('def')
 			this.getHeadlines(null)
 		}
 	}
