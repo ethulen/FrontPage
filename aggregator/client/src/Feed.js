@@ -10,6 +10,7 @@ class Feed extends React.Component {
 			isLoading: true,
 			errors: null,
 		};
+		const {loggedInAccount} = props;
 	}
 	
 	getHeadlines(sources) {
@@ -74,9 +75,11 @@ class Feed extends React.Component {
 	}
 
 	componentDidMount() {
-		if(this.id !== undefined){
+		console.log("feed mounted")
+		console.log(this.loggedInAccount)
+		if(this.loggedInAccount !== undefined){
 		axios
-		.get(`http://localhost:4000/user/${this.id}`).then((response) => {
+		.get(`http://localhost:4000/user/${this.loggedInAccount}`).then((response) => {
 			if (
 				response.data !== undefined &&
 				response.data !== null &&

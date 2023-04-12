@@ -40,13 +40,15 @@ const App = () => {
 					</nav>
 					<Switch>
 						<Route path="/login" component={(routeProps) => 
-							<LoginForm {...routeProps} setLoggedInAccount={setLoggedInAccount}/>
+							<LoginForm {...routeProps} setLoggedInAccount={setLoggedInAccount} loggedInAccount={loggedInAccount}/>
 						}></Route>
 						<Route path="/register" component={RegistrationForm}></Route>
 						<Route path="/feedSelector" render={routeProps => (
 							<FeedSelector {...routeProps} selectedSources={checkedSources} addSource={addSource} removeSource={removeSource} />
 						)}></Route>
-						<Route exact path="/" component={Home}></Route>
+						<Route exact path="/" render={routeProps => (
+							<Home {...routeProps} loggedInAccount={loggedInAccount} />
+						)}></Route>
 					</Switch>
 				</Router>
 			</div>

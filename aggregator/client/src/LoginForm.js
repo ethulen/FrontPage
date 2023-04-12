@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import {Redirect} from 'react-router-dom';
 import axios from 'axios';
 import jwt_decode from "jwt-decode";
+import { useHistory  } from "react-router-dom";
 
 const LoginForm = (props) => {
   const {loggedInAccount, setLoggedInAccount} = props
 	const [error, setError] = useState({});
 	const [isSubmitted, setIsSubmitted] = useState(false);
 	let name, password;
+  const history = useHistory ();
 
     const handleSubmit = (event) => {
 		//Prevent page reload
@@ -18,7 +20,7 @@ const LoginForm = (props) => {
 		if (name === '' || password === '') {
 			setError(true);
 		} else {
-			setIsSubmitted(true);
+			// setIsSubmitted(true);
 			setError(false);
 			axios.post("http://127.0.0.1:4000/login", { name, password }).then((response) => {
 			console.log(response);
@@ -26,6 +28,8 @@ const LoginForm = (props) => {
         var decoded = jwt_decode(response.data.token);
         console.log(decoded)
         setLoggedInAccount(decoded.userId);
+        console.log(loggedInAccount)
+        history.push("/")
       }
 		})
 		}
