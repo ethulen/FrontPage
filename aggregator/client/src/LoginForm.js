@@ -7,7 +7,6 @@ import { useHistory  } from "react-router-dom";
 const LoginForm = (props) => {
   const {loggedInAccount, setLoggedInAccount} = props
 	const [error, setError] = useState({});
-	const [isSubmitted, setIsSubmitted] = useState(false);
 	let name, password;
   const history = useHistory ();
 
@@ -20,7 +19,6 @@ const LoginForm = (props) => {
 		if (name === '' || password === '') {
 			setError(true);
 		} else {
-			// setIsSubmitted(true);
 			setError(false);
 			axios.post("http://127.0.0.1:4000/login", { name, password }).then((response) => {
 			console.log(response);
@@ -64,7 +62,7 @@ const LoginForm = (props) => {
         <div className="app">
           <div className="login-form">
             <div className="title" style={{paddingTop: 18}}><h2>Sign In</h2></div>
-            {isSubmitted && loggedInAccount !== null ? <Redirect to='/'/>: renderForm}
+            {loggedInAccount !== null ? <Redirect to='/'/>: renderForm}
           </div>
         </div>
       );

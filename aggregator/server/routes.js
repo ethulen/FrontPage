@@ -1,10 +1,13 @@
-const { createHash } = require('crypto');
-
 const jwt = require("jsonwebtoken");
-const hash = createHash('sha256');
+const {promisify} = require("util")
 const knexDB = require("./knex");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
+const crypto = require("crypto")
+
+const randomBytes = promisify(crypto.randomBytes)
+const hash = promisify(bcrypt.hash)
+
 
 var g = require('ger')
 var esm = new g.MemESM()
@@ -65,16 +68,15 @@ const setUpRoutes = (app) => {
 	app.post("/register", async (req, res) => {
 		try {
 		  console.log(req.body.sourceList);
-		  const password = await bcrypt.genSalt(saltRounds, function(err, salt) {
-			bcrypt.hash(password, salt, function(err, hash) {
-			  // returns hash
-			  console.log(hash);
-			});
-		  });
+		  const bytes = await randomBytes(20)
+		  const salt = bytes.toString()
+		  const password = await hash(salt + req.body.password, saltRounds)
+		  console.log(password)
 		  const val = await knexDB("users").insert({
 			username: req.body.name,
 			email: req.body.email,
 			password: password,
+			salt: salt,
 		  });
 		  const user = await knexDB("users")
 			.select("id")

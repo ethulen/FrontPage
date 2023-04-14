@@ -10,7 +10,6 @@ class Feed extends React.Component {
 			isLoading: true,
 			errors: null,
 		};
-		const {loggedInAccount} = props;
 	}
 
 	getRecommendedArticles(){
