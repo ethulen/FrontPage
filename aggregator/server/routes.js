@@ -90,7 +90,7 @@ const setUpRoutes = (app) => {
 		try {
 			console.log(req.body.sourceList);
 			const bytes = await randomBytes(20)
-			const salt = bytes.toString()
+			const salt = bytes.toString('hex')
 			const password = await hash(salt + req.body.password, saltRounds)
 			console.log(password)
 			const val = await knexDB("users").insert({
@@ -153,13 +153,8 @@ const setUpRoutes = (app) => {
 			// user already exists with that email
 			var existing_user = users[0];
 			//append salt to req.body.password
-			console.log("existing password: " + existing_user.password)
-			password = await hash(existing_user.salt + req.body.password, saltRounds)
-			console.log("salt: " + existing_user.salt)
-			console.log("unauthenticated password: " + req.body.password)
-			console.log("authenticated password: " + password)
+			password = existing_user.salt + req.body.password
 			if (await bcrypt.compare(password, existing_user.password)) {
-				let session = req.session;
 				console.log("session: " + req.session);
 				req.session.regenerate(async (err) => {
 					if (err) {
