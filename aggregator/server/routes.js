@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const {promisify} = require("util")
+const { promisify } = require("util")
 const knexDB = require("./knex");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
@@ -7,7 +7,6 @@ const crypto = require("crypto")
 
 const randomBytes = promisify(crypto.randomBytes)
 const hash = promisify(bcrypt.hash)
-
 
 var g = require('ger')
 var esm = new g.MemESM()
@@ -41,72 +40,94 @@ const setUpRoutes = (app) => {
 		});
 		res.status(200).json(sources[0]);
 	});
-	app.get("/user/:id/recommended");
-		//TODO: change after making database table
-		//return ger.recommendations_for_person('movies', 'alice', {actions: {likes: 1}})
+	app.get("/user/:id/recommended", async (req, res) => {
+		ger.initialize_namespace('news')
+			.then(async function () {
+				var recommendations = await knexDB("recommendations").all();
+				console.log(recommendations);
+				ger.events(recommendations);
+			})
+			.then(req.session.regenerate(async (err) => {
+				if (err) {
+					console.log("Error!");
+					console.log(err);
+					next(err);
+				}
+			}))
+			.then(function () {
+				// What things might a user like?
+				return ger.recommendations_for_person('news', req.params.name, { actions: { clicks: 1 } })
+			})
+			.then( function () {
+				res.status(200).json(recommendations[0])
+			})
+
+	});
+	//TODO: change after making database table
+	//return ger.recommendations_for_person('movies', 'alice', {actions: {likes: 1}})
 
 	app.post("/user/:id/clicks", async (req, res) => {
-		try{
-		const val = await knexDB("recommendations").insert({
-			namespace: 'news',
-      		person: req.body.name,
-      		action: 'clicks',
-     		thing: req.body.article,
-      		expires_at: '2024-06-06'
-		  });
+		try {
+			const val = await knexDB("recommendations").insert({
+				namespace: 'news',
+				person: req.body.name,
+				action: 'clicks',
+				thing: req.body.article,
+				expires_at: '2024-06-06'
+			});
 		}
-		catch(error) {
+		catch (error) {
 			if (error.code === 'ER_DUP_ENTRY') {
-			  res.status(409).json({ message: 'Entry already exists' });
+				res.status(409).json({ message: 'Entry already exists' });
 			} else {
-			  console.log(error);
-			  res.status(500).json({ message: 'Internal server error' });
+				console.log(error);
+				res.status(500).json({ message: 'Internal server error' });
 			}
 		}
 	});
 	// POST method route
 	app.post("/register", async (req, res) => {
 		try {
-		  console.log(req.body.sourceList);
-		  const bytes = await randomBytes(20)
-		  const salt = bytes.toString()
-		  const password = await hash(salt + req.body.password, saltRounds)
-		  console.log(password)
-		  const val = await knexDB("users").insert({
-			username: req.body.name,
-			email: req.body.email,
-			password: password,
-			salt: salt,
-		  });
-		  const user = await knexDB("users")
-			.select("id")
-			.where("username", req.body.name)
-			.first();
-		  console.log("userid " + user.id);
-		  req.session.user = user.id;
-		  const token = jwt.sign({ userId: req.session.user }, "secretKey", {
-			expiresIn: "1h",
-		  });
-		  req.session.save(function (err) {
-			if (err) {
-			  console.log("Error2");
-			  console.log(err);
-			  return next(err);
-			}
-			console.log("saved");
-			res.status(200).json({ token: token });
-		  });
+			console.log(req.body.sourceList);
+			const bytes = await randomBytes(20)
+			const salt = bytes.toString()
+			const password = await hash(salt + req.body.password, saltRounds)
+			console.log(password)
+			const val = await knexDB("users").insert({
+				username: req.body.name,
+				email: req.body.email,
+				password: password,
+				salt: salt,
+			});
+			const user = await knexDB("users")
+				.select("id")
+				.where("username", req.body.name)
+				.first();
+			console.log("userid " + user.id);
+			req.session.user = user.id;
+			const token = jwt.sign({ userId: req.session.user }, "secretKey", {
+				expiresIn: "1h",
+			});
+			req.session.save(function (err) {
+				if (err) {
+					console.log("Error2");
+					console.log(err);
+					return next(err);
+				}
+				console.log("saved");
+				res.status(200).json({ token: token });
+			});
 		} catch (error) {
-		  if (error.code === 'ER_DUP_ENTRY') {
-			res.status(409).json({ message: 'User already exists' });
-		  } else {
-			console.log(error);
-			res.status(500).json({ message: 'Internal server error' });
-		  }
+			if (error.code === 'ER_DUP_ENTRY') {
+				res.status(409).json({ message: 'User already exists' });
+			} else {
+				console.log(error);
+				res.status(500).json({ message: 'Internal server error' });
+			}
 		}
-	  });
-	  
-	
+	});
+
+
 	//POST sources route
 	app.post("/sourceSelect", isAuthenticated, async (req, res) => {
 		console.log(req.body.sourceList);
@@ -132,9 +153,14 @@ const setUpRoutes = (app) => {
 			// user already exists with that email
 			var existing_user = users[0];
 			//append salt to req.body.password
-			if (await bcrypt.compare(req.body.password, existing_user.password)) {
+			console.log("existing password: " + existing_user.password)
+			password = await hash(existing_user.salt + req.body.password, saltRounds)
+			console.log("salt: " + existing_user.salt)
+			console.log("unauthenticated password: " + req.body.password)
+			console.log("authenticated password: " + password)
+			if (await bcrypt.compare(password, existing_user.password)) {
 				let session = req.session;
-				console.log(req.session);				  
+				console.log("session: " + req.session);
 				req.session.regenerate(async (err) => {
 					if (err) {
 						console.log("Error!");
@@ -142,7 +168,7 @@ const setUpRoutes = (app) => {
 						next(err);
 					}
 				});
-				console.log(req.body)
+				console.log("body: " + req.body)
 				var user = await knexDB("users")
 					.select("id")
 					.where("username", req.body.name)
@@ -151,7 +177,7 @@ const setUpRoutes = (app) => {
 				req.session.user = user.id;
 				const token = jwt.sign({ userId: req.session.user }, "secretKey", {
 					expiresIn: "1h",
-				  });
+				});
 				req.session.save(function (err) {
 					if (err) {
 						console.log("Error2");
@@ -167,7 +193,7 @@ const setUpRoutes = (app) => {
 			}
 		}
 	});
-	
+
 	app.get("/logout", (req, res) => {
 		req.session.destroy();
 		res.redirect("/");

@@ -10,7 +10,7 @@ exports.up = function(knex) {
     table.string('person', 20).unique().notNullable()
     table.string('action', 20)
     table.json('clicked_articles')
-    table.timestamp('expires_at').defaultTo(knex.raw('date_add(?, INTERVAL ? day)', [knex.fn.now(), 365]))
+    table.timestamp('expires_at')
     })
 };
 
