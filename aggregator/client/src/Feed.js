@@ -5,6 +5,7 @@ import { Paper } from "@mui/material";
 class Feed extends React.Component {
 	constructor(props) {
 		super(props);
+		this.handleClick = this.handleClick.bind(this);
 		this.state = {
 			headlinesNews: [],
 			isLoading: true,
@@ -94,9 +95,17 @@ class Feed extends React.Component {
 			} 
 		})}
 		else{
-			console.log('def')
 			this.getHeadlines(null)
 		}
+	}
+
+	handleClick = (e) => {
+		let name = e.target[0].value;
+		let article = e.target[1].value;
+		e.preventDefault();
+		axios.post("http://localhost:4000/user/:id/clicks", { name, article }).then((response) => {
+			console.log(response);
+		});
 	}
 
 	render() {
@@ -131,6 +140,7 @@ class Feed extends React.Component {
 											<br />
 										</p>
 										<a
+											onClick={this.handleClick}
 											href={newsurl}
 											target="_blank"
 											rel="noopener noreferrer"

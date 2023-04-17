@@ -15,13 +15,9 @@ const LoginForm = (props) => {
     let password = event.target[1].value;
     //Prevent page reload
     event.preventDefault();
-    name = event.target[0].value
-    password = event.target[1].value
     if (name === '' || password === '') {
       setError(true);
     } else {
-      // setError({});
-      // setIsSubmitted(true);
       axios.post("http://127.0.0.1:4000/login", { name, password }).then((response) => {
         console.log(response);
         if (response.data.token) {
