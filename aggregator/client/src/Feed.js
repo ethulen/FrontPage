@@ -100,10 +100,9 @@ class Feed extends React.Component {
 	}
 
 	handleClick = (e) => {
-		let name = e.target[0].value;
-		let article = e.target[1].value;
+		let article = document.getElementsByTagName('a');
 		e.preventDefault();
-		axios.post("http://localhost:4000/user/:id/clicks", { name, article }).then((response) => {
+		axios.post("http://localhost:4000/user/:id/clicks", { article }).then((response) => {
 			console.log(response);
 		});
 	}
