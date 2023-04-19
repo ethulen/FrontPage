@@ -66,10 +66,11 @@ const setUpRoutes = (app) => {
 
 	app.post("/user/:id/clicks", async (req, res) => {
 		console.log(req.body)
+		console.log(req.session.user)
 		try {
 			const val = await knexDB("recommendations").insert({
 				namespace: 'news',
-				person: req.session.user,
+				person: req.body.name,
 				action: 'clicks',
 				clicked_articles: req.body.article,
 				expires_at: '2024-06-06'

@@ -7,7 +7,7 @@ exports.up = function(knex) {
     .createTable('recommendations', function (table) {
     table.increments('id')
     table.string('namespace', 20).notNullable()
-    table.string('person', 20).unique().notNullable()
+    table.string('person', 20).notNullable()
     table.string('action', 20)
     table.string('clicked_articles', 20)
     table.timestamp('expires_at')
