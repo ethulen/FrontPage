@@ -103,11 +103,13 @@ class Feed extends React.Component {
 
 	handleClick = (e) => {
 		let article = e.target.dataset.source
+		console.log(e.target.dataset.newsurl)
 		let name = this.props.loggedInAccount
 		e.preventDefault();
 		axios.post("http://localhost:4000/user/:id/clicks", { name, article }, { withCredentials: true }).then((response) => {
 			console.log(response);
 		});
+		window.open(e.target.href, '_blank', 'noopener,noreferrer');
 	}
 
 	render() {
