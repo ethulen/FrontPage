@@ -9,7 +9,7 @@ exports.up = function(knex) {
     table.string('namespace', 20).notNullable()
     table.string('person', 20).unique().notNullable()
     table.string('action', 20)
-    table.json('clicked_articles')
+    table.string('clicked_articles', 20)
     table.timestamp('expires_at')
     })
 };

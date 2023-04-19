@@ -18,7 +18,7 @@ const LoginForm = (props) => {
     if (name === '' || password === '') {
       setError(true);
     } else {
-      axios.post("http://127.0.0.1:4000/login", { name, password }).then((response) => {
+      axios.post("http://127.0.0.1:4000/login", { name, password }, { withCredentials: true }).then((response) => {
         console.log(response);
         if (response.data.token) {
           var decoded = jwt_decode(response.data.token);

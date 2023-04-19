@@ -43,6 +43,7 @@ class Feed extends React.Component {
 						author: `${news.author}`,
 						newsurl: `${news.url}`,
 						url: `${news.urlToImage}`,
+						source: `${news.source.id}`
 					}))
 				)
 				// Change the loading state to display the data
@@ -65,7 +66,8 @@ class Feed extends React.Component {
                     description: `${news.description}`,
                     author: `${news.author}`,
                     newsurl: `${news.url}`,
-                    url: `${news.urlToImage}`
+                    url: `${news.urlToImage}`,
+					source: `${news.source.id}`
                 }))
             )
             // Change the loading state to display the data
@@ -100,9 +102,9 @@ class Feed extends React.Component {
 	}
 
 	handleClick = (e) => {
-		let article = document.getElementsByTagName('a');
+		let article = e.target.dataset.source
 		e.preventDefault();
-		axios.post("http://localhost:4000/user/:id/clicks", { article }).then((response) => {
+		axios.post("http://localhost:4000/user/:id/clicks", { article }, { withCredentials: true }).then((response) => {
 			console.log(response);
 		});
 	}
@@ -113,7 +115,7 @@ class Feed extends React.Component {
 			<React.Fragment>
 				{!isLoading ? (
 					headlinesNews.map((news) => {
-						const { title, description, author, newsurl, url } =
+						const { title, description, author, newsurl, url, source } =
 							news;
 						return (
 							<div className="column" key={title}>
@@ -143,6 +145,7 @@ class Feed extends React.Component {
 											href={newsurl}
 											target="_blank"
 											rel="noopener noreferrer"
+											data-source={source}
 										>
 											Read full article
 										</a>
