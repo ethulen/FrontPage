@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "./Header"
 import { Link, Switch, Route, Router } from 'react-router-dom'
 import LoginForm from './LoginForm';
@@ -20,6 +20,25 @@ const App = () => {
 		const combinedSources = checkedSources.filter(item => item.id !== source.id);
 		setCheckedSources(combinedSources);
 	}
+
+	const [width, setWidth] = useState(window.innerWidth);
+
+	useEffect(() => {
+		function handleResize() {
+			setWidth(window.innerWidth);
+		}
+		window.addEventListener("resize", handleResize);
+		return () => window.removeEventListener("resize", handleResize);
+	}, [width]);
+
+	useEffect(() => {
+		width < 600 && handleSideNavToggle();
+	}, [width]);
+
+	function handleSideNavToggle() {
+		console.log("toggle it");
+	}
+
 	return (
 		<div className="home">
 			<Header />
@@ -39,8 +58,8 @@ const App = () => {
 						</ul>
 					</nav>
 					<Switch>
-						<Route path="/login" component={(routeProps) => 
-							<LoginForm {...routeProps} setLoggedInAccount={setLoggedInAccount} loggedInAccount={loggedInAccount}/>
+						<Route path="/login" component={(routeProps) =>
+							<LoginForm {...routeProps} setLoggedInAccount={setLoggedInAccount} loggedInAccount={loggedInAccount} />
 						}></Route>
 						<Route path="/register" component={RegistrationForm}></Route>
 						<Route path="/feedSelector" render={routeProps => (

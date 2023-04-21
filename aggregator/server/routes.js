@@ -43,9 +43,20 @@ const setUpRoutes = (app) => {
 	app.get("/user/:id/recommended", async (req, res) => {
 		ger.initialize_namespace('news')
 			.then(async function () {
-				var recommendations = await knexDB("recommendations").all();
+				var recommendations = await knexDB("recommendations")
+					.where("person", req.params.id);
 				console.log(recommendations);
-				ger.events(recommendations);
+				if (recommendations[0].people !== undefined) {
+					let sources;
+					for(let i = 0; i < recommendations[0].people.length; i++){
+					sources = await knexDB("users")
+						.select("sources")
+						.where("id", recommendations[0].people[i]);
+					console.log(sources);
+					res.status(200).json(sources[i]);
+					}
+				}
+				return ger.events(recommendations);
 			})
 			.then(req.session.regenerate(async (err) => {
 				if (err) {
@@ -56,12 +67,15 @@ const setUpRoutes = (app) => {
 			}))
 			.then(function () {
 				// What things might a user like?
-				return ger.recommendations_for_person('news', req.params.name, { actions: { clicks: 1 } })
+				return ger.recommendations_for_person('news', req.body.name, { actions: { clicks: 1 } })
 			})
-			.then(function () {
+			.then(function (recommendations) {
+				console.log("\nRecommendations")
+				console.log(JSON.stringify(recommendations, null, 2))
+				console.log(recommendations.recommendations[0].people)
+				//TODO: SELECT sources from users in people, send to front end
 				res.status(200).json(recommendations[0])
 			})
-
 	});
 
 	app.post("/user/:id/clicks", async (req, res) => {

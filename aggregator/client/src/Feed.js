@@ -12,10 +12,6 @@ class Feed extends React.Component {
 			errors: null,
 		};
 	}
-
-	getRecommendedArticles(){
-		axios.get("http://localhost:3000/user/:id/recommended")
-	}
 	
 	getHeadlines(sources) {
 		console.log(sources)
@@ -28,6 +24,30 @@ class Feed extends React.Component {
 				console.log(s)
 				output = output + sources[s] + ","
 			}
+			let name = this.props.loggedInAccount
+			axios.get(`http://localhost:3000/user/${name}/recommended`,{ withCredentials: true }).then((response) => {
+				console.log(response);
+			})
+				// Once a response is obtained, map the API endpoints to props
+				.then((response) =>
+					response.data.articles.map((news) => ({
+						title: `${news.title}`,
+						description: `${news.description}`,
+						author: `${news.author}`,
+						newsurl: `${news.url}`,
+						url: `${news.urlToImage}`,
+						source: `${news.source.id}`
+					}))
+				)
+				// Change the loading state to display the data
+				.then((headlinesNews) => {
+					this.setState({
+						headlinesNews,
+						isLoading: false,
+					});
+				})
+				// Use the `.catch()` method since axios is promise-based
+				.catch((error) => this.setState({ error, isLoading: false }));
 			axios
 				.get("https://newsapi.org/v2/everything", {
 					params: {
@@ -102,7 +122,7 @@ class Feed extends React.Component {
 	}
 
 	handleClick = (e) => {
-		let article = e.target.dataset.source
+		let article = e.target.dataset.newsurl
 		console.log(e.target.dataset.newsurl)
 		let name = this.props.loggedInAccount
 		e.preventDefault();
@@ -118,7 +138,7 @@ class Feed extends React.Component {
 			<React.Fragment>
 				{!isLoading ? (
 					headlinesNews.map((news) => {
-						const { title, description, author, newsurl, url, source } =
+						const { title, description, author, newsurl, url } =
 							news;
 						return (
 							<div className="column" key={title}>
@@ -148,7 +168,7 @@ class Feed extends React.Component {
 											href={newsurl}
 											target="_blank"
 											rel="noopener noreferrer"
-											data-source={source}
+											data-newsurl={newsurl}
 										>
 											Read full article
 										</a>
