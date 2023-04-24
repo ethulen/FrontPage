@@ -21,33 +21,8 @@ class Feed extends React.Component {
 			sources = JSON.parse(sources)
 			console.log(sources)
 			for (var s in sources) {
-				console.log(s)
 				output = output + sources[s] + ","
 			}
-			let name = this.props.loggedInAccount
-			axios.get(`http://localhost:3000/user/${name}/recommended`,{ withCredentials: true }).then((response) => {
-				console.log(response);
-			})
-				// Once a response is obtained, map the API endpoints to props
-				.then((response) =>
-					response.data.articles.map((news) => ({
-						title: `${news.title}`,
-						description: `${news.description}`,
-						author: `${news.author}`,
-						newsurl: `${news.url}`,
-						url: `${news.urlToImage}`,
-						source: `${news.source.id}`
-					}))
-				)
-				// Change the loading state to display the data
-				.then((headlinesNews) => {
-					this.setState({
-						headlinesNews,
-						isLoading: false,
-					});
-				})
-				// Use the `.catch()` method since axios is promise-based
-				.catch((error) => this.setState({ error, isLoading: false }));
 			axios
 				.get("https://newsapi.org/v2/everything", {
 					params: {

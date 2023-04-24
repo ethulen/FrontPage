@@ -45,18 +45,7 @@ const setUpRoutes = (app) => {
 			.then(async function () {
 				var recommendations = await knexDB("recommendations")
 					.where("person", req.params.id);
-				console.log(recommendations);
-				if (recommendations[0].people !== undefined) {
-					let sources;
-					for(let i = 0; i < recommendations[0].people.length; i++){
-					sources = await knexDB("users")
-						.select("sources")
-						.where("id", recommendations[0].people[i]);
-					console.log(sources);
-					res.status(200).json(sources[i]);
-					}
-				}
-				return ger.events(recommendations);
+					ger.events(recommendations);
 			})
 			.then(req.session.regenerate(async (err) => {
 				if (err) {
@@ -69,12 +58,24 @@ const setUpRoutes = (app) => {
 				// What things might a user like?
 				return ger.recommendations_for_person('news', req.body.name, { actions: { clicks: 1 } })
 			})
-			.then(function (recommendations) {
+			.then(async function (recommendations) {
 				console.log("\nRecommendations")
 				console.log(JSON.stringify(recommendations, null, 2))
 				console.log(recommendations.recommendations[0].people)
 				//TODO: SELECT sources from users in people, send to front end
-				res.status(200).json(recommendations[0])
+				if (recommendations.recommendations[0].people !== undefined) {
+					let sources;
+					console.log("People: " + recommendations.recommendations[0].people);
+					let recommended = [];
+					for(let i = 0; i < recommendations.recommendations[0].people.length; i++){
+					sources = await knexDB("users")
+						.select("sources")
+						.where("id", recommendations.recommendations[0].people[i]);
+					console.log("Recommended sources: " + sources);
+					recommended.push(sources)
+					}
+					res.status(200).json(recommended[1]);
+				}
 			})
 	});
 
