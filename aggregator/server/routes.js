@@ -45,7 +45,7 @@ const setUpRoutes = (app) => {
 			.then(async function () {
 				var recommendations = await knexDB("recommendations")
 					.where("person", req.params.id);
-					ger.events(recommendations);
+				ger.events(recommendations);
 			})
 			.then(req.session.regenerate(async (err) => {
 				if (err) {
@@ -67,14 +67,19 @@ const setUpRoutes = (app) => {
 					let sources;
 					console.log("People: " + recommendations.recommendations[0].people);
 					let recommended = [];
-					for(let i = 0; i < recommendations.recommendations[0].people.length; i++){
-					sources = await knexDB("users")
-						.select("sources")
-						.where("id", recommendations.recommendations[0].people[i]);
-					console.log("Recommended sources: " + sources);
-					recommended.push(sources)
+					for (let i = 0; i < recommendations.recommendations[0].people.length; i++) {
+						sources = await knexDB("users")
+							.select("sources")
+							.where("id", recommendations.recommendations[0].people[i]);
+						console.log("Recommended sources: " + sources);
+						recommended.push(sources)
 					}
-					res.status(200).json(recommended[1]);
+					if (json(recommended[1]) === undefined) {
+						res.status(200).json(recommended[0]);
+					}
+					else {
+						res.status(200).json(recommended[1]);
+					}
 				}
 			})
 	});

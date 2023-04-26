@@ -27,6 +27,9 @@ const LoginForm = (props) => {
           console.log("logged in account: " + loggedInAccount)
           history.push("/")
         }
+        const user = { name, password };
+        // store the user in localStorage
+        localStorage.setItem('user', user)
       })
     }
 
