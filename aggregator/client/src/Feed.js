@@ -111,6 +111,9 @@ class Feed extends React.Component {
 		const { isLoading, headlinesNews } = this.state;
 		return (
 			<React.Fragment>
+				<div>
+					<h2 style={{textAlign: "center"}}>Your Feed</h2>
+				</div>
 				{!isLoading ? (
 					headlinesNews.map((news) => {
 						const { title, description, author, newsurl, url } =

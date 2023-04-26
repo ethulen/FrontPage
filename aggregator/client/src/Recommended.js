@@ -13,21 +13,21 @@ class Recommended extends React.Component {
         };
     }
 
-    getHeadlines(recommended, numArticles) {
-        console.log(recommended)
+    getHeadlines(sources, numArticles) {
+        console.log(sources)
         // Axios fetches headlines
-        if (recommended != null) {
+        if (sources != null) {
             let output = ""
-            recommended = JSON.parse(recommended)
-            console.log(recommended)
-            for (var s in recommended) {
+            sources = JSON.parse(sources)
+            console.log(sources)
+            for (var s in sources) {
                 console.log(s)
-                output = output + recommended[s] + ","
+                output = output + sources[s] + ","
             }
             axios
 				.get("https://newsapi.org/v2/everything", {
 					params: {
-						recommended: output,
+						sources: output,
 						apiKey: "e188a3e6d6c64590be570b46271bd205",
                         pageSize: numArticles,
 					},
@@ -66,7 +66,7 @@ class Recommended extends React.Component {
                         response.data !== undefined &&
                         response.data !== null
                     ) {
-                        this.getHeadlines(response.data[0].recommended, 10);
+                        this.getHeadlines(response.data[0].sources, 10);
                     }
                 })
         }
@@ -90,6 +90,9 @@ class Recommended extends React.Component {
         const { isLoading, headlinesNews } = this.state;
         return (
             <React.Fragment>
+                <div>
+                    <h2 style={{textAlign: "center"}}>Recommended Articles</h2>
+                </div>
                 {!isLoading ? (
                     headlinesNews.map((news) => {
                         const { title, description, author, newsurl, url } =

@@ -9,6 +9,8 @@ const Home = (props) => {
 		<form className="home__form">
 			<Masonry columns={2} spacing={2}>
 				<Recommended loggedInAccount={loggedInAccount}/>
+			</Masonry>
+			<Masonry columns={2} spacing={2}>
 				<Feed loggedInAccount={loggedInAccount}/>
 			</Masonry>
 		</form>)

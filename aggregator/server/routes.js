@@ -62,7 +62,6 @@ const setUpRoutes = (app) => {
 				console.log("\nRecommendations")
 				console.log(JSON.stringify(recommendations, null, 2))
 				console.log(recommendations.recommendations[0].people)
-				//TODO: SELECT sources from users in people, send to front end
 				if (recommendations.recommendations[0].people !== undefined) {
 					let sources;
 					console.log("People: " + recommendations.recommendations[0].people);
