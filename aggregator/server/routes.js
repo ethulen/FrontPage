@@ -73,7 +73,7 @@ const setUpRoutes = (app) => {
 						console.log("Recommended sources: " + sources);
 						recommended.push(sources)
 					}
-					if (json(recommended[1]) === undefined) {
+					if (recommended[1] === undefined) {
 						res.status(200).json(recommended[0]);
 					}
 					else {
